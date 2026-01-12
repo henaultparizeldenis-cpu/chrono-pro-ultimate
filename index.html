@@ -689,6 +689,37 @@
             transform: scale(0.98);
         }
 
+        .settings-select {
+            padding: 8px 12px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85em;
+            cursor: pointer;
+        }
+
+        .settings-select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .settings-input {
+            padding: 8px 12px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+        }
+
+        .settings-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
         /* Checkbox styling */
         input[type="checkbox"] {
             width: 50px;
@@ -760,6 +791,19 @@
             width: 100%;
             max-height: 85vh;
             overflow-y: auto;
+        }
+
+        .modal-section {
+            margin-bottom: 25px;
+        }
+
+        .modal-section-title {
+            font-size: 0.75em;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
         }
 
         .modal-header {
@@ -1179,7 +1223,213 @@
                 <div class="modal-title">Settings</div>
                 <button class="close-btn" onclick="closeModal('settings')">×</button>
             </div>
-            <!-- Settings content here -->
+            
+            <!-- Timer Preferences -->
+            <div class="settings-section">
+                <div class="settings-title">⏱️ Timer Preferences</div>
+                <div class="settings-item">
+                    <span>Auto-start Rest</span>
+                    <input type="checkbox" id="autoStartRest" onchange="toggleSetting('autoStartRest')">
+                </div>
+                <div class="settings-item">
+                    <span>Countdown Beeps</span>
+                    <select class="settings-select" id="countdownBeeps" onchange="updateSetting('countdownBeeps')">
+                        <option value="321">3-2-1 only</option>
+                        <option value="5">Last 5 seconds</option>
+                        <option value="10">Last 10 seconds</option>
+                    </select>
+                </div>
+                <div class="settings-item">
+                    <span>Tap Anywhere to Pause</span>
+                    <input type="checkbox" id="tapAnywhere" checked onchange="toggleSetting('tapAnywhere')">
+                </div>
+            </div>
+
+            <!-- Units & Display -->
+            <div class="settings-section">
+                <div class="settings-title">📏 Units & Display</div>
+                <div class="settings-item">
+                    <span>Weight Units</span>
+                    <select class="settings-select" id="weightUnits" onchange="updateSetting('weightUnits')">
+                        <option value="kg">Kilograms (kg)</option>
+                        <option value="lbs">Pounds (lbs)</option>
+                    </select>
+                </div>
+                <div class="settings-item">
+                    <span>Language</span>
+                    <select class="settings-select" id="language" onchange="updateSetting('language')">
+                        <option value="fr">Français</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+                <div class="settings-item">
+                    <span>Time Format</span>
+                    <select class="settings-select" id="timeFormat" onchange="updateSetting('timeFormat')">
+                        <option value="24h">24h</option>
+                        <option value="12h">12h (AM/PM)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Workout Defaults -->
+            <div class="settings-section">
+                <div class="settings-title">💪 Workout Defaults</div>
+                <div class="settings-item">
+                    <span>Default Rest Time</span>
+                    <select class="settings-select" id="defaultRest" onchange="updateSetting('defaultRest')">
+                        <option value="60">1 minute</option>
+                        <option value="90" selected>1:30</option>
+                        <option value="120">2 minutes</option>
+                        <option value="180">3 minutes</option>
+                    </select>
+                </div>
+                <div class="settings-item">
+                    <span>Default HIIT Work Time</span>
+                    <select class="settings-select" id="defaultWork" onchange="updateSetting('defaultWork')">
+                        <option value="20">20 seconds</option>
+                        <option value="30">30 seconds</option>
+                        <option value="45" selected>45 seconds</option>
+                        <option value="60">1 minute</option>
+                    </select>
+                </div>
+                <div class="settings-item">
+                    <span>Default Rounds</span>
+                    <select class="settings-select" id="defaultRounds" onchange="updateSetting('defaultRounds')">
+                        <option value="4">4 rounds</option>
+                        <option value="6">6 rounds</option>
+                        <option value="8" selected>8 rounds</option>
+                        <option value="10">10 rounds</option>
+                        <option value="12">12 rounds</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Graphics & Effects -->
+            <div class="settings-section">
+                <div class="settings-title">🎨 Graphics & Effects</div>
+                <div class="settings-item">
+                    <span>Scanlines Effect</span>
+                    <input type="checkbox" id="scanlinesEffect" checked onchange="toggleGraphics('scanlines')">
+                </div>
+                <div class="settings-item">
+                    <span>Blur Effects</span>
+                    <input type="checkbox" id="blurEffects" checked onchange="toggleGraphics('blur')">
+                </div>
+                <div class="settings-item">
+                    <span>Glow Effects</span>
+                    <input type="checkbox" id="glowEffects" checked onchange="toggleGraphics('glow')">
+                </div>
+                <div class="settings-item">
+                    <span>Animations</span>
+                    <select class="settings-select" id="animationSpeed" onchange="updateGraphics('animations')">
+                        <option value="none">None (battery saver)</option>
+                        <option value="reduced">Reduced</option>
+                        <option value="normal" selected>Normal</option>
+                        <option value="smooth">Smooth (more battery)</option>
+                    </select>
+                </div>
+                <div class="settings-item">
+                    <span>Timer Font Size</span>
+                    <select class="settings-select" id="timerSize" onchange="updateGraphics('timerSize')">
+                        <option value="14">Small (14vw)</option>
+                        <option value="16" selected>Medium (16vw)</option>
+                        <option value="18">Large (18vw)</option>
+                        <option value="20">Extra Large (20vw)</option>
+                    </select>
+                </div>
+                <div class="settings-item">
+                    <span>Progress Bar Style</span>
+                    <select class="settings-select" id="progressStyle" onchange="updateGraphics('progressStyle')">
+                        <option value="linear" selected>Linear Bar</option>
+                        <option value="circular">Circular</option>
+                        <option value="minimal">Minimal</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Notifications -->
+            <div class="settings-section">
+                <div class="settings-title">🔔 Notifications</div>
+                <div class="settings-item">
+                    <span>Daily Reminder</span>
+                    <input type="checkbox" id="dailyReminder" onchange="toggleSetting('dailyReminder')">
+                </div>
+                <div class="settings-item">
+                    <span>Reminder Time</span>
+                    <input type="time" class="settings-input" id="reminderTime" value="18:00" onchange="updateSetting('reminderTime')">
+                </div>
+                <div class="settings-item">
+                    <span>Achievement Notifications</span>
+                    <input type="checkbox" id="achievementNotifs" checked onchange="toggleSetting('achievementNotifs')">
+                </div>
+                <div class="settings-item">
+                    <span>Streak Alerts</span>
+                    <input type="checkbox" id="streakAlerts" checked onchange="toggleSetting('streakAlerts')">
+                </div>
+            </div>
+
+            <!-- Equipment Tracking -->
+            <div class="settings-section">
+                <div class="settings-title">🏋️ Equipment Tracking</div>
+                <div class="settings-item">
+                    <span>Track Weights</span>
+                    <input type="checkbox" id="trackWeights" onchange="toggleSetting('trackWeights')">
+                </div>
+                <div class="settings-item">
+                    <span>Track Equipment</span>
+                    <input type="checkbox" id="trackEquipment" onchange="toggleSetting('trackEquipment')">
+                </div>
+                <div class="settings-item">
+                    <span>Track Gym Location</span>
+                    <input type="checkbox" id="trackLocation" onchange="toggleSetting('trackLocation')">
+                </div>
+            </div>
+
+            <!-- Performance -->
+            <div class="settings-section">
+                <div class="settings-title">⚡ Performance</div>
+                <div class="settings-item">
+                    <span>Battery Saver Mode</span>
+                    <input type="checkbox" id="batterySaver" onchange="toggleBatterySaver()">
+                </div>
+                <div class="settings-item">
+                    <span>Auto-save Frequency</span>
+                    <select class="settings-select" id="autoSave" onchange="updateSetting('autoSave')">
+                        <option value="immediate" selected>Immediate</option>
+                        <option value="5min">Every 5 minutes</option>
+                        <option value="workout">End of workout</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Advanced -->
+            <div class="settings-section">
+                <div class="settings-title">🔧 Advanced</div>
+                <button class="form-btn secondary" onclick="resetAchievements()">Reset Achievements</button>
+                <button class="form-btn secondary" onclick="resetProgress()">Reset XP & Level</button>
+                <button class="form-btn secondary" onclick="showDebugInfo()">Show Debug Info</button>
+            </div>
+
+            <!-- Data Management -->
+            <div class="settings-section">
+                <div class="settings-title">💾 Data Management</div>
+                <button class="form-btn secondary" onclick="exportAllData()">📥 Export All Data</button>
+                <button class="form-btn secondary" onclick="importData()">📤 Import Data</button>
+                <button class="form-btn secondary" onclick="clearAllData()">🗑️ Clear All Data</button>
+            </div>
+
+            <!-- About -->
+            <div class="settings-section">
+                <div class="settings-title">ℹ️ About</div>
+                <div style="font-size: 0.85em; color: var(--text-secondary); line-height: 1.6;">
+                    <strong>Chrono Pro Ultimate</strong><br>
+                    Version 1.0.0<br>
+                    Build 2026.01.12<br><br>
+                    Professional workout timer with gamification, analytics, and voice coaching.<br><br>
+                    Built with ❤️ for athletes who train hard.<br><br>
+                    <a href="https://github.com/henaultparizeldenis-cpu/chrono-pro-ultimate" style="color: var(--accent);">View on GitHub</a>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1983,7 +2233,11 @@
             closeModal('theme');
             
             const names = { 'dark': '🌙 Dark', 'light': '☀️ Light', 'cyber': '⚡ Cyberpunk' };
-            document.getElementById('currentTheme').textContent = names[theme] || 'Dark';
+            const currentThemeEl = document.getElementById('currentTheme');
+            const currentThemeModalEl = document.getElementById('currentThemeModal');
+            
+            if (currentThemeEl) currentThemeEl.textContent = names[theme] || 'Dark';
+            if (currentThemeModalEl) currentThemeModalEl.textContent = names[theme] || 'Dark';
             
             showNotification(`Theme changed to ${names[theme]}`);
         }
@@ -1998,21 +2252,189 @@
         }
 
         function toggleSound() {
-            state.soundEnabled = document.getElementById('soundToggle').checked;
+            const toggle1 = document.getElementById('soundToggle');
+            const toggle2 = document.getElementById('soundToggleModal');
+            
+            if (toggle1 && toggle1 === event.target) {
+                state.soundEnabled = toggle1.checked;
+                if (toggle2) toggle2.checked = toggle1.checked;
+            } else if (toggle2 && toggle2 === event.target) {
+                state.soundEnabled = toggle2.checked;
+                if (toggle1) toggle1.checked = toggle2.checked;
+            }
+            
             saveState();
             showNotification(state.soundEnabled ? 'Sound enabled' : 'Sound disabled');
         }
 
         function toggleVibrate() {
-            state.vibrateEnabled = document.getElementById('vibrateToggle').checked;
+            const toggle1 = document.getElementById('vibrateToggle');
+            const toggle2 = document.getElementById('vibrateToggleModal');
+            
+            if (toggle1 && toggle1 === event.target) {
+                state.vibrateEnabled = toggle1.checked;
+                if (toggle2) toggle2.checked = toggle1.checked;
+            } else if (toggle2 && toggle2 === event.target) {
+                state.vibrateEnabled = toggle2.checked;
+                if (toggle1) toggle1.checked = toggle2.checked;
+            }
+            
             saveState();
             showNotification(state.vibrateEnabled ? 'Vibration enabled' : 'Vibration disabled');
         }
 
         function toggleVoice() {
-            state.voiceEnabled = document.getElementById('voiceToggle').checked;
+            const toggle1 = document.getElementById('voiceToggle');
+            const toggle2 = document.getElementById('voiceToggleModal');
+            
+            if (toggle1 && toggle1 === event.target) {
+                state.voiceEnabled = toggle1.checked;
+                if (toggle2) toggle2.checked = toggle1.checked;
+            } else if (toggle2 && toggle2 === event.target) {
+                state.voiceEnabled = toggle2.checked;
+                if (toggle1) toggle1.checked = toggle2.checked;
+            }
+            
             saveState();
             showNotification(state.voiceEnabled ? 'Voice coach enabled' : 'Voice coach disabled');
+        }
+
+        // =====================================
+        // SETTINGS FUNCTIONS
+        // =====================================
+
+        function toggleSetting(setting) {
+            const checkbox = document.getElementById(setting);
+            state.settings = state.settings || {};
+            state.settings[setting] = checkbox.checked;
+            saveState();
+            showNotification(`${setting} ${checkbox.checked ? 'enabled' : 'disabled'}`);
+        }
+
+        function updateSetting(setting) {
+            const element = document.getElementById(setting);
+            state.settings = state.settings || {};
+            state.settings[setting] = element.value;
+            saveState();
+            showNotification(`${setting} updated`);
+        }
+
+        function toggleGraphics(effect) {
+            const checkbox = document.getElementById(effect + 'Effect');
+            const body = document.body;
+            
+            if (effect === 'scanlines') {
+                body.style.setProperty('--scanline-opacity', checkbox.checked ? '0.2' : '0');
+            } else if (effect === 'blur') {
+                body.classList.toggle('no-blur', !checkbox.checked);
+            } else if (effect === 'glow') {
+                body.classList.toggle('no-glow', !checkbox.checked);
+            }
+            
+            state.settings = state.settings || {};
+            state.settings[effect] = checkbox.checked;
+            saveState();
+        }
+
+        function updateGraphics(setting) {
+            const element = document.getElementById(setting);
+            const value = element.value;
+            
+            if (setting === 'animations') {
+                document.documentElement.style.setProperty('--animation-speed', 
+                    value === 'none' ? '0s' : 
+                    value === 'reduced' ? '0.15s' : 
+                    value === 'smooth' ? '0.4s' : '0.3s'
+                );
+            } else if (setting === 'timerSize') {
+                display.style.fontSize = value + 'vw';
+            } else if (setting === 'progressStyle') {
+                // Future implementation for circular progress
+                showNotification(`Progress style: ${value}`);
+            }
+            
+            state.settings = state.settings || {};
+            state.settings[setting] = value;
+            saveState();
+        }
+
+        function toggleBatterySaver() {
+            const enabled = document.getElementById('batterySaver').checked;
+            
+            if (enabled) {
+                document.getElementById('animationSpeed').value = 'none';
+                document.getElementById('scanlinesEffect').checked = false;
+                document.getElementById('blurEffects').checked = false;
+                document.getElementById('glowEffects').checked = false;
+                
+                updateGraphics('animations');
+                toggleGraphics('scanlines');
+                toggleGraphics('blur');
+                toggleGraphics('glow');
+            }
+            
+            showNotification(enabled ? 'Battery saver enabled' : 'Battery saver disabled');
+        }
+
+        function resetAchievements() {
+            if (confirm('⚠️ Reset all achievements? This cannot be undone!')) {
+                state.achievements = DEFAULT_ACHIEVEMENTS.map(a => ({...a, unlocked: false}));
+                saveState();
+                renderAchievements();
+                showNotification('Achievements reset');
+            }
+        }
+
+        function resetProgress() {
+            if (confirm('⚠️ Reset XP and Level? This cannot be undone!')) {
+                state.level = 1;
+                state.xp = 0;
+                saveState();
+                updateProfile();
+                showNotification('Progress reset');
+            }
+        }
+
+        function showDebugInfo() {
+            const info = `
+Storage Used: ${JSON.stringify(state).length} bytes
+Total Workouts: ${state.history.length}
+Achievements Unlocked: ${state.achievements.filter(a => a.unlocked).length}
+Current Streak: ${state.streak}
+Level: ${state.level}
+XP: ${state.xp}
+            `.trim();
+            
+            alert(info);
+        }
+
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = (event) => {
+                    try {
+                        const imported = JSON.parse(event.target.result);
+                        
+                        if (confirm('Import this data? Current data will be replaced!')) {
+                            state = { ...state, ...imported };
+                            saveState();
+                            location.reload();
+                        }
+                    } catch (error) {
+                        alert('Invalid file format');
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
+            
+            input.click();
         }
 
         // =====================================
