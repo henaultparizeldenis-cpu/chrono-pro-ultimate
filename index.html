@@ -27,7 +27,7 @@
             --warning: #ffaa00;
             --success: #00ff88;
             --animation-speed: 0.3s;
-            --scanline-opacity: 0.2;
+            --scanline-opacity: 0.5;
         }
 
         .theme-light {
@@ -78,18 +78,50 @@
             height: -webkit-fill-available;
         }
 
-        /* No blur mode */
-        body.no-blur .modal,
-        body.no-blur .bottom-nav,
-        body.no-blur .top-bar,
-        body.no-blur .modal-content,
-        body.no-blur .settings-item,
-        body.no-blur .notification {
+        /* No blur mode - Alternative visible effect for mobile */
+        .bottom-nav {
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        
+        body.no-blur .bottom-nav {
+            background: rgba(0, 0, 0, 0.7) !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            border-top: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        body.no-blur .modal {
+            background: rgba(0, 0, 0, 0.85) !important;
             backdrop-filter: none !important;
             -webkit-backdrop-filter: none !important;
         }
 
-        /* No glow mode */
+        /* No glow mode - Much more visible glow effect */
+        .timer-display {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16vw;
+            font-weight: 900;
+            font-variant-numeric: tabular-nums;
+            color: var(--text-primary);
+            text-shadow: 
+                0 0 20px var(--accent),
+                0 0 40px var(--accent),
+                0 0 60px var(--accent),
+                0 0 80px rgba(0, 255, 136, 0.5);
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+            line-height: 1;
+            margin: 20px 0;
+        }
+        
+        body.no-glow .timer-display {
+            text-shadow: none !important;
+            color: rgba(255, 255, 255, 0.95) !important;
+        }
+        
         body.no-glow .timer-display,
         body.no-glow .timer-display::before,
         body.no-glow .stat-value,
@@ -105,13 +137,30 @@
             filter: none !important;
         }
         
-        /* Debug: visualize when classes are applied */
-        body.no-blur {
-            border-top: 3px solid red;
+        /* Scanlines plus visibles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 255, 136, 0.15) 0px,
+                transparent 1px,
+                transparent 2px,
+                rgba(0, 255, 136, 0.15) 3px
+            );
+            opacity: var(--scanline-opacity);
+            pointer-events: none;
+            z-index: 1;
+            animation: scanlines 8s linear infinite;
         }
         
-        body.no-glow {
-            border-bottom: 3px solid blue;
+        @keyframes scanlines {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(10px); }
         }
 
         /* Scanlines effect */
@@ -1620,6 +1669,344 @@
         };
 
         // Default achievements
+        // =====================================
+        // EXERCISE DATABASE
+        // =====================================
+        
+        const EXERCISE_DATABASE = {
+            // PECTORAUX (16 exercices)
+            chest: [
+                { name: "Bench Press", nameFr: "Développé Couché", type: "compound", equipment: "barbell", primary: "chest", secondary: ["triceps", "shoulders"], icon: "🏋️" },
+                { name: "Incline Bench Press", nameFr: "Développé Incliné", type: "compound", equipment: "barbell", primary: "chest", secondary: ["triceps", "shoulders"], icon: "🏋️" },
+                { name: "Decline Bench Press", nameFr: "Développé Décliné", type: "compound", equipment: "barbell", primary: "chest", secondary: ["triceps"], icon: "🏋️" },
+                { name: "Dumbbell Press", nameFr: "Développé Haltères", type: "compound", equipment: "dumbbell", primary: "chest", secondary: ["triceps", "shoulders"], icon: "💪" },
+                { name: "Incline Dumbbell Press", nameFr: "Développé Incliné Haltères", type: "compound", equipment: "dumbbell", primary: "chest", secondary: ["triceps", "shoulders"], icon: "💪" },
+                { name: "Dumbbell Flyes", nameFr: "Écarté Haltères", type: "isolation", equipment: "dumbbell", primary: "chest", secondary: [], icon: "💪" },
+                { name: "Incline Dumbbell Flyes", nameFr: "Écarté Incliné Haltères", type: "isolation", equipment: "dumbbell", primary: "chest", secondary: [], icon: "💪" },
+                { name: "Cable Flyes", nameFr: "Écarté Poulie", type: "isolation", equipment: "cable", primary: "chest", secondary: [], icon: "🔗" },
+                { name: "Pec Deck", nameFr: "Pec Deck", type: "isolation", equipment: "machine", primary: "chest", secondary: [], icon: "🎰" },
+                { name: "Push-ups", nameFr: "Pompes", type: "compound", equipment: "bodyweight", primary: "chest", secondary: ["triceps", "shoulders"], icon: "🤸" },
+                { name: "Dips", nameFr: "Dips", type: "compound", equipment: "bodyweight", primary: "chest", secondary: ["triceps"], icon: "🤸" },
+                { name: "Chest Press Machine", nameFr: "Presse Pectoraux Machine", type: "compound", equipment: "machine", primary: "chest", secondary: ["triceps"], icon: "🎰" },
+                { name: "Landmine Press", nameFr: "Presse Landmine", type: "compound", equipment: "barbell", primary: "chest", secondary: ["shoulders"], icon: "🏋️" },
+                { name: "Svend Press", nameFr: "Svend Press", type: "isolation", equipment: "dumbbell", primary: "chest", secondary: [], icon: "💪" },
+                { name: "Floor Press", nameFr: "Développé au Sol", type: "compound", equipment: "barbell", primary: "chest", secondary: ["triceps"], icon: "🏋️" },
+                { name: "Squeeze Press", nameFr: "Développé Serré", type: "compound", equipment: "dumbbell", primary: "chest", secondary: ["triceps"], icon: "💪" }
+            ],
+            
+            // DOS (22 exercices)
+            back: [
+                { name: "Deadlift", nameFr: "Soulevé de Terre", type: "compound", equipment: "barbell", primary: "back", secondary: ["legs", "core"], icon: "🏋️" },
+                { name: "Barbell Row", nameFr: "Rowing Barre", type: "compound", equipment: "barbell", primary: "back", secondary: ["biceps"], icon: "🏋️" },
+                { name: "T-Bar Row", nameFr: "Rowing T-Bar", type: "compound", equipment: "barbell", primary: "back", secondary: ["biceps"], icon: "🏋️" },
+                { name: "Dumbbell Row", nameFr: "Rowing Haltère", type: "compound", equipment: "dumbbell", primary: "back", secondary: ["biceps"], icon: "💪" },
+                { name: "Seated Cable Row", nameFr: "Rowing Poulie Basse", type: "compound", equipment: "cable", primary: "back", secondary: ["biceps"], icon: "🔗" },
+                { name: "Pull-ups", nameFr: "Tractions", type: "compound", equipment: "bodyweight", primary: "back", secondary: ["biceps"], icon: "🤸" },
+                { name: "Chin-ups", nameFr: "Tractions Supination", type: "compound", equipment: "bodyweight", primary: "back", secondary: ["biceps"], icon: "🤸" },
+                { name: "Lat Pulldown", nameFr: "Tirage Vertical", type: "compound", equipment: "cable", primary: "back", secondary: ["biceps"], icon: "🔗" },
+                { name: "Close Grip Pulldown", nameFr: "Tirage Prise Serrée", type: "compound", equipment: "cable", primary: "back", secondary: ["biceps"], icon: "🔗" },
+                { name: "Face Pulls", nameFr: "Tirage Visage", type: "isolation", equipment: "cable", primary: "back", secondary: ["shoulders"], icon: "🔗" },
+                { name: "Shrugs", nameFr: "Haussements Épaules", type: "isolation", equipment: "dumbbell", primary: "back", secondary: [], icon: "💪" },
+                { name: "Barbell Shrugs", nameFr: "Shrugs Barre", type: "isolation", equipment: "barbell", primary: "back", secondary: [], icon: "🏋️" },
+                { name: "Rack Pulls", nameFr: "Rack Pulls", type: "compound", equipment: "barbell", primary: "back", secondary: ["legs"], icon: "🏋️" },
+                { name: "Pendlay Row", nameFr: "Rowing Pendlay", type: "compound", equipment: "barbell", primary: "back", secondary: ["biceps"], icon: "🏋️" },
+                { name: "Seal Row", nameFr: "Rowing Seal", type: "compound", equipment: "barbell", primary: "back", secondary: ["biceps"], icon: "🏋️" },
+                { name: "Chest Supported Row", nameFr: "Rowing Appui Poitrine", type: "compound", equipment: "dumbbell", primary: "back", secondary: ["biceps"], icon: "💪" },
+                { name: "Machine Row", nameFr: "Rowing Machine", type: "compound", equipment: "machine", primary: "back", secondary: ["biceps"], icon: "🎰" },
+                { name: "Straight Arm Pulldown", nameFr: "Tirage Bras Tendus", type: "isolation", equipment: "cable", primary: "back", secondary: [], icon: "🔗" },
+                { name: "Inverted Row", nameFr: "Rowing Inversé", type: "compound", equipment: "bodyweight", primary: "back", secondary: ["biceps"], icon: "🤸" },
+                { name: "Meadows Row", nameFr: "Rowing Meadows", type: "compound", equipment: "barbell", primary: "back", secondary: ["biceps"], icon: "🏋️" },
+                { name: "Kroc Row", nameFr: "Kroc Row", type: "compound", equipment: "dumbbell", primary: "back", secondary: ["biceps"], icon: "💪" },
+                { name: "Cable Pullover", nameFr: "Pullover Poulie", type: "isolation", equipment: "cable", primary: "back", secondary: [], icon: "🔗" }
+            ],
+            
+            // ÉPAULES (16 exercices)
+            shoulders: [
+                { name: "Overhead Press", nameFr: "Développé Militaire", type: "compound", equipment: "barbell", primary: "shoulders", secondary: ["triceps"], icon: "🏋️" },
+                { name: "Dumbbell Shoulder Press", nameFr: "Développé Épaules Haltères", type: "compound", equipment: "dumbbell", primary: "shoulders", secondary: ["triceps"], icon: "💪" },
+                { name: "Arnold Press", nameFr: "Arnold Press", type: "compound", equipment: "dumbbell", primary: "shoulders", secondary: ["triceps"], icon: "💪" },
+                { name: "Lateral Raises", nameFr: "Élévations Latérales", type: "isolation", equipment: "dumbbell", primary: "shoulders", secondary: [], icon: "💪" },
+                { name: "Front Raises", nameFr: "Élévations Frontales", type: "isolation", equipment: "dumbbell", primary: "shoulders", secondary: [], icon: "💪" },
+                { name: "Rear Delt Flyes", nameFr: "Oiseau", type: "isolation", equipment: "dumbbell", primary: "shoulders", secondary: [], icon: "💪" },
+                { name: "Cable Lateral Raises", nameFr: "Élévations Latérales Poulie", type: "isolation", equipment: "cable", primary: "shoulders", secondary: [], icon: "🔗" },
+                { name: "Face Pulls", nameFr: "Tirage Visage", type: "isolation", equipment: "cable", primary: "shoulders", secondary: ["back"], icon: "🔗" },
+                { name: "Upright Row", nameFr: "Rowing Menton", type: "compound", equipment: "barbell", primary: "shoulders", secondary: [], icon: "🏋️" },
+                { name: "Push Press", nameFr: "Push Press", type: "compound", equipment: "barbell", primary: "shoulders", secondary: ["legs", "triceps"], icon: "🏋️" },
+                { name: "Bradford Press", nameFr: "Bradford Press", type: "compound", equipment: "barbell", primary: "shoulders", secondary: ["triceps"], icon: "🏋️" },
+                { name: "Machine Shoulder Press", nameFr: "Presse Épaules Machine", type: "compound", equipment: "machine", primary: "shoulders", secondary: ["triceps"], icon: "🎰" },
+                { name: "Seated Dumbbell Press", nameFr: "Développé Assis Haltères", type: "compound", equipment: "dumbbell", primary: "shoulders", secondary: ["triceps"], icon: "💪" },
+                { name: "Pike Push-ups", nameFr: "Pompes Pike", type: "compound", equipment: "bodyweight", primary: "shoulders", secondary: ["triceps"], icon: "🤸" },
+                { name: "Handstand Push-ups", nameFr: "Pompes ATR", type: "compound", equipment: "bodyweight", primary: "shoulders", secondary: ["triceps"], icon: "🤸" },
+                { name: "Lu Raises", nameFr: "Lu Raises", type: "isolation", equipment: "dumbbell", primary: "shoulders", secondary: [], icon: "💪" }
+            ],
+            
+            // JAMBES (28 exercices)
+            legs: [
+                { name: "Back Squat", nameFr: "Squat Arrière", type: "compound", equipment: "barbell", primary: "legs", secondary: ["core"], icon: "🏋️" },
+                { name: "Front Squat", nameFr: "Squat Avant", type: "compound", equipment: "barbell", primary: "legs", secondary: ["core"], icon: "🏋️" },
+                { name: "Bulgarian Split Squat", nameFr: "Squat Bulgare", type: "compound", equipment: "dumbbell", primary: "legs", secondary: [], icon: "💪" },
+                { name: "Leg Press", nameFr: "Presse à Cuisses", type: "compound", equipment: "machine", primary: "legs", secondary: [], icon: "🎰" },
+                { name: "Hack Squat", nameFr: "Hack Squat", type: "compound", equipment: "machine", primary: "legs", secondary: [], icon: "🎰" },
+                { name: "Leg Extension", nameFr: "Extension Jambes", type: "isolation", equipment: "machine", primary: "legs", secondary: [], icon: "🎰" },
+                { name: "Leg Curl", nameFr: "Curl Jambes", type: "isolation", equipment: "machine", primary: "legs", secondary: [], icon: "🎰" },
+                { name: "Romanian Deadlift", nameFr: "Soulevé de Terre Roumain", type: "compound", equipment: "barbell", primary: "legs", secondary: ["back"], icon: "🏋️" },
+                { name: "Stiff Leg Deadlift", nameFr: "Soulevé de Terre Jambes Tendues", type: "compound", equipment: "barbell", primary: "legs", secondary: ["back"], icon: "🏋️" },
+                { name: "Lunges", nameFr: "Fentes", type: "compound", equipment: "dumbbell", primary: "legs", secondary: [], icon: "💪" },
+                { name: "Walking Lunges", nameFr: "Fentes Marchées", type: "compound", equipment: "dumbbell", primary: "legs", secondary: [], icon: "💪" },
+                { name: "Reverse Lunges", nameFr: "Fentes Arrière", type: "compound", equipment: "dumbbell", primary: "legs", secondary: [], icon: "💪" },
+                { name: "Goblet Squat", nameFr: "Goblet Squat", type: "compound", equipment: "dumbbell", primary: "legs", secondary: [], icon: "💪" },
+                { name: "Box Squat", nameFr: "Box Squat", type: "compound", equipment: "barbell", primary: "legs", secondary: [], icon: "🏋️" },
+                { name: "Sumo Squat", nameFr: "Squat Sumo", type: "compound", equipment: "barbell", primary: "legs", secondary: [], icon: "🏋️" },
+                { name: "Calf Raises", nameFr: "Mollets Debout", type: "isolation", equipment: "machine", primary: "legs", secondary: [], icon: "🎰" },
+                { name: "Seated Calf Raises", nameFr: "Mollets Assis", type: "isolation", equipment: "machine", primary: "legs", secondary: [], icon: "🎰" },
+                { name: "Donkey Calf Raises", nameFr: "Mollets Penché", type: "isolation", equipment: "machine", primary: "legs", secondary: [], icon: "🎰" },
+                { name: "Hip Thrust", nameFr: "Hip Thrust", type: "compound", equipment: "barbell", primary: "legs", secondary: [], icon: "🏋️" },
+                { name: "Glute Bridge", nameFr: "Pont Fessiers", type: "compound", equipment: "bodyweight", primary: "legs", secondary: [], icon: "🤸" },
+                { name: "Step-ups", nameFr: "Step-ups", type: "compound", equipment: "dumbbell", primary: "legs", secondary: [], icon: "💪" },
+                { name: "Pistol Squat", nameFr: "Squat Pistol", type: "compound", equipment: "bodyweight", primary: "legs", secondary: [], icon: "🤸" },
+                { name: "Sissy Squat", nameFr: "Sissy Squat", type: "isolation", equipment: "bodyweight", primary: "legs", secondary: [], icon: "🤸" },
+                { name: "Nordic Curls", nameFr: "Nordic Curls", type: "isolation", equipment: "bodyweight", primary: "legs", secondary: [], icon: "🤸" },
+                { name: "Good Mornings", nameFr: "Good Mornings", type: "compound", equipment: "barbell", primary: "legs", secondary: ["back"], icon: "🏋️" },
+                { name: "Leg Press Calf Raises", nameFr: "Mollets Presse", type: "isolation", equipment: "machine", primary: "legs", secondary: [], icon: "🎰" },
+                { name: "Smith Machine Squat", nameFr: "Squat Smith Machine", type: "compound", equipment: "machine", primary: "legs", secondary: [], icon: "🎰" },
+                { name: "Adductor Machine", nameFr: "Machine Adducteurs", type: "isolation", equipment: "machine", primary: "legs", secondary: [], icon: "🎰" }
+            ],
+            
+            // BICEPS (12 exercices)
+            biceps: [
+                { name: "Barbell Curl", nameFr: "Curl Barre", type: "isolation", equipment: "barbell", primary: "biceps", secondary: [], icon: "🏋️" },
+                { name: "Dumbbell Curl", nameFr: "Curl Haltères", type: "isolation", equipment: "dumbbell", primary: "biceps", secondary: [], icon: "💪" },
+                { name: "Hammer Curl", nameFr: "Curl Marteau", type: "isolation", equipment: "dumbbell", primary: "biceps", secondary: ["forearms"], icon: "💪" },
+                { name: "Preacher Curl", nameFr: "Curl Pupitre", type: "isolation", equipment: "barbell", primary: "biceps", secondary: [], icon: "🏋️" },
+                { name: "Cable Curl", nameFr: "Curl Poulie", type: "isolation", equipment: "cable", primary: "biceps", secondary: [], icon: "🔗" },
+                { name: "Concentration Curl", nameFr: "Curl Concentration", type: "isolation", equipment: "dumbbell", primary: "biceps", secondary: [], icon: "💪" },
+                { name: "Incline Dumbbell Curl", nameFr: "Curl Incliné", type: "isolation", equipment: "dumbbell", primary: "biceps", secondary: [], icon: "💪" },
+                { name: "Spider Curl", nameFr: "Spider Curl", type: "isolation", equipment: "barbell", primary: "biceps", secondary: [], icon: "🏋️" },
+                { name: "21s", nameFr: "21s", type: "isolation", equipment: "barbell", primary: "biceps", secondary: [], icon: "🏋️" },
+                { name: "Zottman Curl", nameFr: "Zottman Curl", type: "isolation", equipment: "dumbbell", primary: "biceps", secondary: ["forearms"], icon: "💪" },
+                { name: "Reverse Curl", nameFr: "Curl Inversé", type: "isolation", equipment: "barbell", primary: "biceps", secondary: ["forearms"], icon: "🏋️" },
+                { name: "Drag Curl", nameFr: "Drag Curl", type: "isolation", equipment: "barbell", primary: "biceps", secondary: [], icon: "🏋️" }
+            ],
+            
+            // TRICEPS (14 exercices)
+            triceps: [
+                { name: "Close Grip Bench Press", nameFr: "Développé Prise Serrée", type: "compound", equipment: "barbell", primary: "triceps", secondary: ["chest"], icon: "🏋️" },
+                { name: "Dips", nameFr: "Dips", type: "compound", equipment: "bodyweight", primary: "triceps", secondary: ["chest"], icon: "🤸" },
+                { name: "Skull Crushers", nameFr: "Barre au Front", type: "isolation", equipment: "barbell", primary: "triceps", secondary: [], icon: "🏋️" },
+                { name: "Overhead Tricep Extension", nameFr: "Extension Nuque", type: "isolation", equipment: "dumbbell", primary: "triceps", secondary: [], icon: "💪" },
+                { name: "Cable Pushdown", nameFr: "Pushdown Poulie", type: "isolation", equipment: "cable", primary: "triceps", secondary: [], icon: "🔗" },
+                { name: "Rope Pushdown", nameFr: "Pushdown Corde", type: "isolation", equipment: "cable", primary: "triceps", secondary: [], icon: "🔗" },
+                { name: "Diamond Push-ups", nameFr: "Pompes Diamant", type: "compound", equipment: "bodyweight", primary: "triceps", secondary: ["chest"], icon: "🤸" },
+                { name: "Overhead Cable Extension", nameFr: "Extension Poulie Haute", type: "isolation", equipment: "cable", primary: "triceps", secondary: [], icon: "🔗" },
+                { name: "Kickbacks", nameFr: "Kickbacks", type: "isolation", equipment: "dumbbell", primary: "triceps", secondary: [], icon: "💪" },
+                { name: "JM Press", nameFr: "JM Press", type: "compound", equipment: "barbell", primary: "triceps", secondary: [], icon: "🏋️" },
+                { name: "Tate Press", nameFr: "Tate Press", type: "isolation", equipment: "dumbbell", primary: "triceps", secondary: [], icon: "💪" },
+                { name: "California Press", nameFr: "California Press", type: "compound", equipment: "barbell", primary: "triceps", secondary: [], icon: "🏋️" },
+                { name: "Bench Dips", nameFr: "Dips Banc", type: "compound", equipment: "bodyweight", primary: "triceps", secondary: [], icon: "🤸" },
+                { name: "Single Arm Cable Extension", nameFr: "Extension Poulie Unilatéral", type: "isolation", equipment: "cable", primary: "triceps", secondary: [], icon: "🔗" }
+            ],
+            
+            // CORE/ABS (16 exercices)
+            core: [
+                { name: "Plank", nameFr: "Planche", type: "isolation", equipment: "bodyweight", primary: "core", secondary: [], icon: "🤸" },
+                { name: "Side Plank", nameFr: "Planche Latérale", type: "isolation", equipment: "bodyweight", primary: "core", secondary: [], icon: "🤸" },
+                { name: "Crunches", nameFr: "Crunchs", type: "isolation", equipment: "bodyweight", primary: "core", secondary: [], icon: "🤸" },
+                { name: "Bicycle Crunches", nameFr: "Crunchs Vélo", type: "isolation", equipment: "bodyweight", primary: "core", secondary: [], icon: "🤸" },
+                { name: "Russian Twists", nameFr: "Russian Twists", type: "isolation", equipment: "bodyweight", primary: "core", secondary: [], icon: "🤸" },
+                { name: "Leg Raises", nameFr: "Élévations Jambes", type: "isolation", equipment: "bodyweight", primary: "core", secondary: [], icon: "🤸" },
+                { name: "Hanging Leg Raises", nameFr: "Élévations Jambes Suspendu", type: "isolation", equipment: "bodyweight", primary: "core", secondary: [], icon: "🤸" },
+                { name: "Ab Wheel", nameFr: "Roue Abdos", type: "compound", equipment: "other", primary: "core", secondary: [], icon: "⚙️" },
+                { name: "Cable Crunches", nameFr: "Crunchs Poulie", type: "isolation", equipment: "cable", primary: "core", secondary: [], icon: "🔗" },
+                { name: "Pallof Press", nameFr: "Pallof Press", type: "isolation", equipment: "cable", primary: "core", secondary: [], icon: "🔗" },
+                { name: "Mountain Climbers", nameFr: "Mountain Climbers", type: "compound", equipment: "bodyweight", primary: "core", secondary: [], icon: "🤸" },
+                { name: "Dead Bug", nameFr: "Dead Bug", type: "isolation", equipment: "bodyweight", primary: "core", secondary: [], icon: "🤸" },
+                { name: "Bird Dog", nameFr: "Bird Dog", type: "isolation", equipment: "bodyweight", primary: "core", secondary: [], icon: "🤸" },
+                { name: "Sit-ups", nameFr: "Sit-ups", type: "isolation", equipment: "bodyweight", primary: "core", secondary: [], icon: "🤸" },
+                { name: "V-ups", nameFr: "V-ups", type: "isolation", equipment: "bodyweight", primary: "core", secondary: [], icon: "🤸" },
+                { name: "Dragon Flag", nameFr: "Dragon Flag", type: "compound", equipment: "bodyweight", primary: "core", secondary: [], icon: "🤸" }
+            ],
+            
+            // CARDIO (12 exercices)
+            cardio: [
+                { name: "Running", nameFr: "Course", type: "cardio", equipment: "bodyweight", primary: "cardio", secondary: ["legs"], icon: "🏃" },
+                { name: "Jump Rope", nameFr: "Corde à Sauter", type: "cardio", equipment: "other", primary: "cardio", secondary: ["legs"], icon: "🪢" },
+                { name: "Burpees", nameFr: "Burpees", type: "cardio", equipment: "bodyweight", primary: "cardio", secondary: ["full-body"], icon: "🤸" },
+                { name: "Box Jumps", nameFr: "Box Jumps", type: "cardio", equipment: "other", primary: "cardio", secondary: ["legs"], icon: "📦" },
+                { name: "Battle Ropes", nameFr: "Battle Ropes", type: "cardio", equipment: "other", primary: "cardio", secondary: ["arms"], icon: "🪢" },
+                { name: "Rowing Machine", nameFr: "Rameur", type: "cardio", equipment: "machine", primary: "cardio", secondary: ["back"], icon: "🚣" },
+                { name: "Cycling", nameFr: "Vélo", type: "cardio", equipment: "machine", primary: "cardio", secondary: ["legs"], icon: "🚴" },
+                { name: "Stair Climber", nameFr: "Escaliers", type: "cardio", equipment: "machine", primary: "cardio", secondary: ["legs"], icon: "🪜" },
+                { name: "Elliptical", nameFr: "Elliptique", type: "cardio", equipment: "machine", primary: "cardio", secondary: ["legs"], icon: "⚙️" },
+                { name: "Swimming", nameFr: "Natation", type: "cardio", equipment: "other", primary: "cardio", secondary: ["full-body"], icon: "🏊" },
+                { name: "High Knees", nameFr: "Montées Genoux", type: "cardio", equipment: "bodyweight", primary: "cardio", secondary: ["legs"], icon: "🤸" },
+                { name: "Jumping Jacks", nameFr: "Jumping Jacks", type: "cardio", equipment: "bodyweight", primary: "cardio", secondary: ["full-body"], icon: "🤸" }
+            ]
+        };
+
+        // Tempos presets
+        const TEMPO_PRESETS = {
+            force: { value: "2-1-X-1", label: "Force", icon: "🏋️", desc: "Explosif concentrique" },
+            hypertrophy: { value: "3-0-1-0", label: "Hypertrophie", icon: "💪", desc: "Tension constante" },
+            endurance: { value: "2-0-2-0", label: "Endurance", icon: "🔥", desc: "Mouvement continu" },
+            power: { value: "2-1-X-2", label: "Power", icon: "⚡", desc: "Pause + explosion" },
+            control: { value: "3-2-3-1", label: "Contrôle", icon: "🎯", desc: "Technique maximale" }
+        };
+
+        // Program templates
+        const PROGRAM_TEMPLATES = [
+            {
+                id: "ppl",
+                name: "Push/Pull/Legs",
+                nameFr: "Push/Pull/Legs",
+                description: "Split 6 jours/semaine",
+                daysPerWeek: 6,
+                workouts: [
+                    {
+                        name: "Push A",
+                        exercises: [
+                            { exercise: "Bench Press", sets: 4, reps: 8, tempo: "3-0-1-0", rest: 120 },
+                            { exercise: "Overhead Press", sets: 3, reps: 10, tempo: "3-0-1-0", rest: 90 },
+                            { exercise: "Incline Dumbbell Press", sets: 3, reps: 12, tempo: "3-0-1-0", rest: 90 },
+                            { exercise: "Lateral Raises", sets: 3, reps: 15, tempo: "2-0-1-0", rest: 60 },
+                            { exercise: "Cable Pushdown", sets: 3, reps: 12, tempo: "2-0-1-0", rest: 60 },
+                            { exercise: "Overhead Tricep Extension", sets: 3, reps: 12, tempo: "3-0-1-0", rest: 60 }
+                        ]
+                    },
+                    {
+                        name: "Pull A",
+                        exercises: [
+                            { exercise: "Deadlift", sets: 4, reps: 6, tempo: "2-1-X-1", rest: 180 },
+                            { exercise: "Pull-ups", sets: 4, reps: 8, tempo: "3-0-1-0", rest: 120 },
+                            { exercise: "Barbell Row", sets: 4, reps: 10, tempo: "3-0-1-0", rest: 90 },
+                            { exercise: "Face Pulls", sets: 3, reps: 15, tempo: "2-1-2-0", rest: 60 },
+                            { exercise: "Barbell Curl", sets: 3, reps: 10, tempo: "3-0-1-0", rest: 60 },
+                            { exercise: "Hammer Curl", sets: 3, reps: 12, tempo: "2-0-1-0", rest: 60 }
+                        ]
+                    },
+                    {
+                        name: "Legs A",
+                        exercises: [
+                            { exercise: "Back Squat", sets: 4, reps: 8, tempo: "3-1-X-1", rest: 180 },
+                            { exercise: "Romanian Deadlift", sets: 3, reps: 10, tempo: "3-1-2-0", rest: 120 },
+                            { exercise: "Leg Press", sets: 3, reps: 12, tempo: "3-0-1-0", rest: 90 },
+                            { exercise: "Leg Curl", sets: 3, reps: 12, tempo: "3-0-1-0", rest: 60 },
+                            { exercise: "Calf Raises", sets: 4, reps: 15, tempo: "2-2-2-0", rest: 45 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "focus_pecs",
+                name: "Focus Pecs",
+                nameFr: "Focus Pectoraux",
+                description: "Programme spécialisé pecs, 4-5 jours/semaine",
+                daysPerWeek: 5,
+                workouts: [
+                    {
+                        name: "Pecs Heavy",
+                        exercises: [
+                            { exercise: "Bench Press", sets: 5, reps: 5, tempo: "2-1-X-1", rest: 180 },
+                            { exercise: "Incline Bench Press", sets: 4, reps: 6, tempo: "3-0-1-0", rest: 150 },
+                            { exercise: "Dips", sets: 3, reps: 8, tempo: "3-0-1-0", rest: 120 },
+                            { exercise: "Cable Flyes", sets: 3, reps: 12, tempo: "3-1-2-1", rest: 60 }
+                        ]
+                    },
+                    {
+                        name: "Dos & Biceps",
+                        exercises: [
+                            { exercise: "Barbell Row", sets: 4, reps: 8, tempo: "3-0-1-0", rest: 120 },
+                            { exercise: "Pull-ups", sets: 4, reps: 8, tempo: "3-0-1-0", rest: 120 },
+                            { exercise: "Seated Cable Row", sets: 3, reps: 12, tempo: "3-0-1-0", rest: 90 },
+                            { exercise: "Barbell Curl", sets: 4, reps: 10, tempo: "3-0-1-0", rest: 60 },
+                            { exercise: "Hammer Curl", sets: 3, reps: 12, tempo: "2-0-1-0", rest: 60 }
+                        ]
+                    },
+                    {
+                        name: "Pecs Volume",
+                        exercises: [
+                            { exercise: "Incline Dumbbell Press", sets: 4, reps: 10, tempo: "4-0-2-0", rest: 90 },
+                            { exercise: "Dumbbell Flyes", sets: 4, reps: 12, tempo: "3-1-2-1", rest: 75 },
+                            { exercise: "Cable Flyes", sets: 3, reps: 15, tempo: "3-1-2-1", rest: 60 },
+                            { exercise: "Push-ups", sets: 3, reps: 20, tempo: "3-0-1-0", rest: 60 }
+                        ]
+                    },
+                    {
+                        name: "Jambes & Épaules",
+                        exercises: [
+                            { exercise: "Back Squat", sets: 4, reps: 8, tempo: "3-1-X-1", rest: 180 },
+                            { exercise: "Romanian Deadlift", sets: 3, reps: 10, tempo: "3-1-2-0", rest: 120 },
+                            { exercise: "Overhead Press", sets: 4, reps: 8, tempo: "3-0-1-0", rest: 120 },
+                            { exercise: "Lateral Raises", sets: 4, reps: 15, tempo: "2-0-1-0", rest: 60 }
+                        ]
+                    },
+                    {
+                        name: "Pecs Pump",
+                        exercises: [
+                            { exercise: "Dumbbell Press", sets: 3, reps: 15, tempo: "2-0-1-0", rest: 60 },
+                            { exercise: "Pec Deck", sets: 4, reps: 20, tempo: "2-1-2-0", rest: 45 },
+                            { exercise: "Cable Flyes", sets: 4, reps: 15, tempo: "3-1-2-1", rest: 45 },
+                            { exercise: "Diamond Push-ups", sets: 3, reps: 15, tempo: "2-0-1-0", rest: 60 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "strength",
+                name: "5x5 Strength",
+                nameFr: "Force 5×5",
+                description: "Programme force classique, 3 jours/semaine",
+                daysPerWeek: 3,
+                workouts: [
+                    {
+                        name: "Jour A",
+                        exercises: [
+                            { exercise: "Back Squat", sets: 5, reps: 5, tempo: "2-1-X-1", rest: 240 },
+                            { exercise: "Bench Press", sets: 5, reps: 5, tempo: "2-1-X-1", rest: 240 },
+                            { exercise: "Barbell Row", sets: 5, reps: 5, tempo: "2-0-X-0", rest: 180 }
+                        ]
+                    },
+                    {
+                        name: "Jour B",
+                        exercises: [
+                            { exercise: "Back Squat", sets: 5, reps: 5, tempo: "2-1-X-1", rest: 240 },
+                            { exercise: "Overhead Press", sets: 5, reps: 5, tempo: "2-1-X-1", rest: 240 },
+                            { exercise: "Deadlift", sets: 1, reps: 5, tempo: "1-0-X-0", rest: 300 }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "upper_lower",
+                name: "Upper/Lower",
+                nameFr: "Haut/Bas",
+                description: "Split 4 jours/semaine",
+                daysPerWeek: 4,
+                workouts: [
+                    {
+                        name: "Upper A",
+                        exercises: [
+                            { exercise: "Bench Press", sets: 4, reps: 6, tempo: "3-0-1-0", rest: 150 },
+                            { exercise: "Barbell Row", sets: 4, reps: 8, tempo: "3-0-1-0", rest: 120 },
+                            { exercise: "Overhead Press", sets: 3, reps: 8, tempo: "3-0-1-0", rest: 120 },
+                            { exercise: "Pull-ups", sets: 3, reps: 10, tempo: "3-0-1-0", rest: 90 },
+                            { exercise: "Barbell Curl", sets: 3, reps: 10, tempo: "3-0-1-0", rest: 60 },
+                            { exercise: "Skull Crushers", sets: 3, reps: 10, tempo: "3-0-1-0", rest: 60 }
+                        ]
+                    },
+                    {
+                        name: "Lower A",
+                        exercises: [
+                            { exercise: "Back Squat", sets: 4, reps: 6, tempo: "3-1-X-1", rest: 180 },
+                            { exercise: "Romanian Deadlift", sets: 4, reps: 8, tempo: "3-1-2-0", rest: 120 },
+                            { exercise: "Leg Press", sets: 3, reps: 12, tempo: "3-0-1-0", rest: 90 },
+                            { exercise: "Leg Curl", sets: 3, reps: 12, tempo: "3-0-1-0", rest: 60 },
+                            { exercise: "Calf Raises", sets: 4, reps: 15, tempo: "2-2-2-0", rest: 45 }
+                        ]
+                    }
+                ]
+            }
+        ];
+
         const DEFAULT_ACHIEVEMENTS = [
             { id: 'first_workout', name: 'First Workout', icon: '🎯', description: 'Complete your first workout', unlocked: false, xp: 10 },
             { id: 'week_streak', name: '7 Day Streak', icon: '🔥', description: 'Train 7 days in a row', unlocked: false, xp: 50 },
@@ -2088,7 +2475,7 @@
             const s = state.settings;
             
             // Scanlines
-            const scanlinesOpacity = (s.scanlinesEffect !== false) ? '0.2' : '0';
+            const scanlinesOpacity = (s.scanlinesEffect !== false) ? '0.5' : '0';
             document.documentElement.style.setProperty('--scanline-opacity', scanlinesOpacity);
             
             // Blur
@@ -2113,6 +2500,27 @@
             const animSpeed = s.animationSpeed || 'normal';
             const speedMap = { 'none': '0s', 'reduced': '0.15s', 'normal': '0.3s', 'smooth': '0.4s' };
             document.documentElement.style.setProperty('--animation-speed', speedMap[animSpeed]);
+            
+            // Progress bar style
+            const progressStyle = s.progressStyle || 'linear';
+            const progressBar = document.querySelector('.progress-bar');
+            const progressFill = document.querySelector('.progress-fill');
+            
+            if (progressBar && progressFill) {
+                if (progressStyle === 'linear') {
+                    progressBar.style.height = '6px';
+                    progressBar.style.borderRadius = '0';
+                    progressFill.style.borderRadius = '0';
+                } else if (progressStyle === 'circular') {
+                    progressBar.style.height = '12px';
+                    progressBar.style.borderRadius = '12px';
+                    progressFill.style.borderRadius = '12px';
+                } else if (progressStyle === 'minimal') {
+                    progressBar.style.height = '2px';
+                    progressBar.style.borderRadius = '0';
+                    progressFill.style.borderRadius = '0';
+                }
+            }
         }
 
         function setupGestures() {
@@ -3014,7 +3422,7 @@
             if (!checkbox) return;
             
             if (effect === 'scanlines') {
-                const opacity = checkbox.checked ? '0.2' : '0';
+                const opacity = checkbox.checked ? '0.5' : '0';
                 document.documentElement.style.setProperty('--scanline-opacity', opacity);
                 console.log('Scanlines opacity set to:', opacity);
                 showNotification(checkbox.checked ? '✅ Scanlines enabled' : '❌ Scanlines disabled');
@@ -3026,7 +3434,7 @@
                     document.body.classList.add('no-blur');
                 }
                 console.log('Blur effect:', checkbox.checked ? 'enabled' : 'disabled', '- Body classes:', document.body.className);
-                showNotification(checkbox.checked ? '✅ Blur effects enabled' : '❌ Blur effects disabled');
+                showNotification(checkbox.checked ? '✅ Blur effects enabled (dark background)' : '❌ Blur effects disabled (light background)');
                 
             } else if (effect === 'glow') {
                 if (checkbox.checked) {
@@ -3035,7 +3443,7 @@
                     document.body.classList.add('no-glow');
                 }
                 console.log('Glow effect:', checkbox.checked ? 'enabled' : 'disabled', '- Body classes:', document.body.className);
-                showNotification(checkbox.checked ? '✅ Glow effects enabled' : '❌ Glow effects disabled');
+                showNotification(checkbox.checked ? '✅ Glow effects enabled (green aura)' : '❌ Glow effects disabled (plain white)');
             }
             
             state.settings = state.settings || {};
@@ -3043,9 +3451,7 @@
             saveState();
             
             // Force repaint
-            document.body.style.display = 'none';
-            document.body.offsetHeight; // Trigger reflow
-            document.body.style.display = '';
+            void document.body.offsetWidth;
         }
 
         function updateGraphics(setting) {
@@ -3086,7 +3492,30 @@
                 }
                 
             } else if (setting === 'progressStyle') {
-                showNotification(`📊 Progress style: ${value}`);
+                // Change progress bar style
+                const progressBar = document.querySelector('.progress-bar');
+                const progressFill = document.querySelector('.progress-fill');
+                
+                if (progressBar && progressFill) {
+                    if (value === 'linear') {
+                        progressBar.style.height = '6px';
+                        progressBar.style.borderRadius = '0';
+                        progressFill.style.borderRadius = '0';
+                        showNotification('📊 Linear progress bar');
+                    } else if (value === 'circular') {
+                        // Make it thicker and rounded
+                        progressBar.style.height = '12px';
+                        progressBar.style.borderRadius = '12px';
+                        progressFill.style.borderRadius = '12px';
+                        showNotification('⭕ Circular (rounded) progress bar');
+                    } else if (value === 'minimal') {
+                        // Make it very thin
+                        progressBar.style.height = '2px';
+                        progressBar.style.borderRadius = '0';
+                        progressFill.style.borderRadius = '0';
+                        showNotification('➖ Minimal progress bar');
+                    }
+                }
                 console.log('Progress style set to:', value);
             }
             
