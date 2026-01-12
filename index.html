@@ -156,8 +156,9 @@
             display: none;
             min-height: 100vh;
             padding: 20px;
-            padding-bottom: 100px;
+            padding-bottom: 120px;
             padding-top: 60px;
+            overflow-y: auto;
         }
 
         .page.active {
@@ -220,8 +221,9 @@
         .timer-container {
             display: flex;
             flex-direction: column;
-            height: calc(100vh - 160px);
+            min-height: calc(100vh - 160px);
             justify-content: space-between;
+            padding-bottom: 20px;
         }
 
         .timer-header {
@@ -257,16 +259,17 @@
         }
 
         .timer-section {
-            flex: 1;
+            flex: 0 1 auto;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            margin: 10px 0;
         }
 
         .timer-display {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 18vw;
+            font-size: 16vw;
             font-weight: 900;
             font-variant-numeric: tabular-nums;
             color: var(--text-primary);
@@ -275,6 +278,7 @@
             user-select: none;
             position: relative;
             line-height: 1;
+            margin: 20px 0;
         }
 
         .timer-display::before {
@@ -683,6 +687,41 @@
 
         .settings-item:active {
             transform: scale(0.98);
+        }
+
+        /* Checkbox styling */
+        input[type="checkbox"] {
+            width: 50px;
+            height: 28px;
+            appearance: none;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-primary);
+            border-radius: 14px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        input[type="checkbox"]::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--text-tertiary);
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s;
+        }
+
+        input[type="checkbox"]:checked {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        input[type="checkbox"]:checked::before {
+            background: #000;
+            transform: translateX(22px);
         }
 
         /* ===================================== */
