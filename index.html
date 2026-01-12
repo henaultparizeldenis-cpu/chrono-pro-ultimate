@@ -26,6 +26,8 @@
             --danger: #ff3366;
             --warning: #ffaa00;
             --success: #00ff88;
+            --animation-speed: 0.3s;
+            --scanline-opacity: 0.2;
         }
 
         .theme-light {
@@ -69,11 +71,47 @@
             min-height: -webkit-fill-available;
             overflow-x: hidden;
             touch-action: manipulation;
-            transition: background 0.3s, color 0.3s;
+            transition: background var(--animation-speed), color var(--animation-speed);
         }
 
         html {
             height: -webkit-fill-available;
+        }
+
+        /* No blur mode */
+        body.no-blur .modal,
+        body.no-blur .bottom-nav,
+        body.no-blur .top-bar,
+        body.no-blur .modal-content,
+        body.no-blur .settings-item,
+        body.no-blur .notification {
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
+
+        /* No glow mode */
+        body.no-glow .timer-display,
+        body.no-glow .timer-display::before,
+        body.no-glow .stat-value,
+        body.no-glow .progress-fill,
+        body.no-glow .progress-fill::after,
+        body.no-glow h1,
+        body.no-glow .notification,
+        body.no-glow .timer-stat-value,
+        body.no-glow .workout-badge,
+        body.no-glow .achievement-card.unlocked {
+            text-shadow: none !important;
+            box-shadow: none !important;
+            filter: none !important;
+        }
+        
+        /* Debug: visualize when classes are applied */
+        body.no-blur {
+            border-top: 3px solid red;
+        }
+        
+        body.no-glow {
+            border-bottom: 3px solid blue;
         }
 
         /* Scanlines effect */
@@ -91,7 +129,7 @@
                 transparent 2px,
                 var(--border-primary) 3px
             );
-            opacity: 0.2;
+            opacity: var(--scanline-opacity);
             pointer-events: none;
             z-index: 9999;
             animation: scanlines 8s linear infinite;
@@ -129,7 +167,7 @@
             gap: 4px;
             padding: 8px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all var(--animation-speed, 0.2s);
             border: none;
             background: transparent;
             color: var(--text-secondary);
@@ -205,7 +243,7 @@
             font-size: 0.75em;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all var(--animation-speed, 0.2s);
         }
 
         .top-btn:active {
@@ -1032,15 +1070,15 @@
                 <div class="timer-stats">
                     <div class="timer-stat">
                         <div class="timer-stat-value" id="currentSet">-</div>
-                        <div class="timer-stat-label">Set</div>
+                        <div class="timer-stat-label" data-i18n="set">Set</div>
                     </div>
                     <div class="timer-stat">
                         <div class="timer-stat-value" id="totalTime">00:00</div>
-                        <div class="timer-stat-label">Session</div>
+                        <div class="timer-stat-label" data-i18n="session">Session</div>
                     </div>
                     <div class="timer-stat">
                         <div class="timer-stat-value" id="repsCount">-</div>
-                        <div class="timer-stat-label">Reps</div>
+                        <div class="timer-stat-label" data-i18n="reps">Reps</div>
                     </div>
                 </div>
 
@@ -1051,10 +1089,10 @@
 
             <div class="timer-controls">
                 <div class="mode-selector">
-                    <button class="mode-btn active" data-mode="timer" onclick="setMode('timer')">Timer</button>
-                    <button class="mode-btn" data-mode="series" onclick="setMode('series')">Series</button>
-                    <button class="mode-btn" data-mode="amrap" onclick="setMode('amrap')">AMRAP</button>
-                    <button class="mode-btn" data-mode="interval" onclick="setMode('interval')">HIIT</button>
+                    <button class="mode-btn active" data-mode="timer" onclick="setMode('timer')"><span data-i18n="timerMode">Timer</span></button>
+                    <button class="mode-btn" data-mode="series" onclick="setMode('series')"><span data-i18n="series">Series</span></button>
+                    <button class="mode-btn" data-mode="amrap" onclick="setMode('amrap')"><span data-i18n="amrap">AMRAP</span></button>
+                    <button class="mode-btn" data-mode="interval" onclick="setMode('interval')"><span data-i18n="hiit">HIIT</span></button>
                 </div>
 
                 <div class="quick-presets" id="quickPresets">
@@ -1067,9 +1105,9 @@
                 </div>
 
                 <div class="main-controls">
-                    <button class="control-btn primary" id="startBtn" onclick="startTimer()">START</button>
-                    <button class="control-btn" id="pauseBtn" onclick="pauseTimer()" disabled>PAUSE</button>
-                    <button class="control-btn" id="resetBtn" onclick="resetTimer()">RESET</button>
+                    <button class="control-btn primary" id="startBtn" onclick="startTimer()"><span data-i18n="start">START</span></button>
+                    <button class="control-btn" id="pauseBtn" onclick="pauseTimer()" disabled><span data-i18n="pause">PAUSE</span></button>
+                    <button class="control-btn" id="resetBtn" onclick="resetTimer()"><span data-i18n="reset">RESET</span></button>
                 </div>
             </div>
         </div>
@@ -1196,19 +1234,19 @@
     <div class="bottom-nav">
         <button class="nav-item active" onclick="switchPage('timer')">
             <div class="nav-icon">⏱️</div>
-            <div>Timer</div>
+            <div data-i18n="timer">Timer</div>
         </button>
         <button class="nav-item" onclick="switchPage('programs')">
             <div class="nav-icon">📋</div>
-            <div>Programs</div>
+            <div data-i18n="programs">Programs</div>
         </button>
         <button class="nav-item" onclick="switchPage('analytics')">
             <div class="nav-icon">📊</div>
-            <div>Analytics</div>
+            <div data-i18n="analytics">Analytics</div>
         </button>
         <button class="nav-item" onclick="switchPage('profile')">
             <div class="nav-icon">👤</div>
-            <div>Profile</div>
+            <div data-i18n="profile">Profile</div>
         </button>
     </div>
 
@@ -1242,6 +1280,23 @@
                 <div class="settings-item">
                     <span>Tap Anywhere to Pause</span>
                     <input type="checkbox" id="tapAnywhere" checked onchange="toggleSetting('tapAnywhere')">
+                </div>
+            </div>
+
+            <!-- Audio & Haptics -->
+            <div class="settings-section">
+                <div class="settings-title">🔊 Audio & Haptics</div>
+                <div class="settings-item">
+                    <span>Sound Effects</span>
+                    <input type="checkbox" id="soundToggleModal" checked onchange="toggleSound()">
+                </div>
+                <div class="settings-item">
+                    <span>Vibration</span>
+                    <input type="checkbox" id="vibrateToggleModal" checked onchange="toggleVibrate()">
+                </div>
+                <div class="settings-item">
+                    <span>Voice Coach</span>
+                    <input type="checkbox" id="voiceToggleModal" checked onchange="toggleVoice()">
                 </div>
             </div>
 
@@ -1527,6 +1582,33 @@
             vibrateEnabled: true,
             voiceEnabled: true,
             
+            settings: {
+                autoStartRest: false,
+                countdownBeeps: '321',
+                tapAnywhere: true,
+                weightUnits: 'kg',
+                language: 'fr',
+                timeFormat: '24h',
+                defaultRest: 90,
+                defaultWork: 45,
+                defaultRounds: 8,
+                scanlinesEffect: true,
+                blurEffects: true,
+                glowEffects: true,
+                animationSpeed: 'normal',
+                timerSize: '16',
+                progressStyle: 'linear',
+                dailyReminder: false,
+                reminderTime: '18:00',
+                achievementNotifs: true,
+                streakAlerts: true,
+                trackWeights: false,
+                trackEquipment: false,
+                trackLocation: false,
+                batterySaver: false,
+                autoSave: 'immediate'
+            },
+            
             // Data
             templates: [],
             programs: [],
@@ -1554,6 +1636,346 @@
         let audioContext = null;
         let speechSynthesis = window.speechSynthesis;
 
+        // =====================================
+        // TRANSLATIONS
+        // =====================================
+        
+        const translations = {
+            fr: {
+                // Navigation
+                timer: "Timer",
+                programs: "Programmes",
+                analytics: "Analyses",
+                profile: "Profil",
+                
+                // Timer page
+                standardTimer: "Timer Standard",
+                seriesMode: "Mode Séries",
+                amrapMode: "Mode AMRAP",
+                intervalTraining: "Entraînement Interval",
+                
+                // Controls
+                start: "START",
+                pause: "PAUSE",
+                reset: "RESET",
+                
+                // Stats
+                set: "Série",
+                session: "Session",
+                reps: "Reps",
+                
+                // Modes
+                timerMode: "Timer",
+                series: "Series",
+                amrap: "AMRAP",
+                hiit: "HIIT",
+                
+                // Programs
+                createNewProgram: "Créer Nouveau Programme",
+                buildYourPlan: "Créez votre plan d'entraînement",
+                noPrograms: "Aucun programme. Créez-en un !",
+                
+                // Analytics
+                workouts: "Workouts",
+                totalSets: "Total Séries",
+                thisWeek: "Cette Semaine",
+                avgPerWeek: "Moy/Semaine",
+                dayActivity: "Activité 7 Jours",
+                volumeByMuscle: "Volume par Muscle",
+                exportAllData: "📥 Exporter Données",
+                generateReport: "📊 Générer Rapport",
+                
+                // Profile
+                athlete: "Athlète",
+                level: "Niveau",
+                xp: "XP",
+                streak: "Série",
+                achievements: "Succès",
+                appearance: "Apparence",
+                theme: "Thème",
+                audioHaptics: "Audio & Haptique",
+                soundEffects: "Effets Sonores",
+                vibration: "Vibration",
+                voiceCoach: "Coach Vocal",
+                dataManagement: "Gestion Données",
+                clearAllData: "🗑️ Effacer Données",
+                
+                // Settings
+                settings: "Paramètres",
+                timerPreferences: "⏱️ Préférences Timer",
+                autoStartRest: "Démarrage Auto Repos",
+                countdownBeeps: "Bips Compte à Rebours",
+                tapAnywherePause: "Tap Partout = Pause",
+                
+                unitsDisplay: "📏 Unités & Affichage",
+                weightUnits: "Unités Poids",
+                language: "Langue",
+                timeFormat: "Format Heure",
+                
+                workoutDefaults: "💪 Défauts Workout",
+                defaultRestTime: "Temps Repos Défaut",
+                defaultWorkTime: "Temps Travail Défaut (HIIT)",
+                defaultRounds: "Rounds Défaut",
+                
+                graphicsEffects: "🎨 Graphismes & Effets",
+                scanlinesEffect: "Effet Scanlines",
+                blurEffects: "Effets Flou",
+                glowEffects: "Effets Lumineux",
+                animations: "Animations",
+                timerFontSize: "Taille Timer",
+                progressBarStyle: "Style Barre Progression",
+                
+                notifications: "🔔 Notifications",
+                dailyReminder: "Rappel Quotidien",
+                reminderTime: "Heure Rappel",
+                achievementNotifs: "Notifs Succès",
+                streakAlerts: "Alertes Série",
+                
+                equipmentTracking: "🏋️ Suivi Équipement",
+                trackWeights: "Suivre Charges",
+                trackEquipment: "Suivre Équipement",
+                trackLocation: "Suivre Localisation Salle",
+                
+                performance: "⚡ Performance",
+                batterySaver: "Mode Économie Batterie",
+                autoSaveFreq: "Fréquence Sauvegarde Auto",
+                
+                advanced: "🔧 Avancé",
+                resetAchievements: "Réinitialiser Succès",
+                resetProgress: "Réinitialiser XP & Niveau",
+                showDebugInfo: "Infos Debug",
+                
+                about: "ℹ️ À Propos",
+                version: "Version",
+                build: "Build",
+                description: "Timer d'entraînement professionnel avec gamification, analyses et coach vocal.",
+                builtFor: "Créé avec ❤️ pour les athlètes qui s'entraînent dur.",
+                
+                importData: "📤 Importer Données",
+                
+                // Notifications messages
+                workoutComplete: "🔥 Workout Terminé !",
+                levelUp: "🎉 Niveau Supérieur ! Niveau",
+                achievementUnlocked: "🏆 Succès Débloqué :",
+                themeChanged: "Thème changé en",
+                soundEnabled: "Son activé",
+                soundDisabled: "Son désactivé",
+                vibrationEnabled: "Vibration activée",
+                vibrationDisabled: "Vibration désactivée",
+                voiceEnabled: "Coach vocal activé",
+                voiceDisabled: "Coach vocal désactivé",
+                dataExported: "📥 Données exportées !",
+                dataImported: "✅ Données importées !",
+                achievementsReset: "🔄 Succès réinitialisés",
+                progressReset: "🔄 Progression réinitialisée",
+                batterySaverEnabled: "⚡ Économie batterie activée",
+                batterySaverDisabled: "Économie batterie désactivée",
+                
+                // Time units
+                minute: "minute",
+                minutes: "minutes",
+                second: "seconde",
+                seconds: "secondes",
+                
+                // Countdown beeps options
+                beeps321: "3-2-1 seulement",
+                beeps5: "5 dernières secondes",
+                beeps10: "10 dernières secondes",
+                
+                // Animation options
+                animNone: "Aucune (économie batterie)",
+                animReduced: "Réduites",
+                animNormal: "Normales",
+                animSmooth: "Fluides (+ batterie)",
+                
+                // Timer size options
+                small: "Petit",
+                medium: "Moyen",
+                large: "Grand",
+                extraLarge: "Très Grand",
+                
+                // Progress style
+                linear: "Barre Linéaire",
+                circular: "Circulaire",
+                minimal: "Minimal",
+                
+                // Save frequency
+                immediate: "Immédiat",
+                every5min: "Toutes les 5 minutes",
+                endWorkout: "Fin du workout"
+            },
+            
+            en: {
+                // Navigation
+                timer: "Timer",
+                programs: "Programs",
+                analytics: "Analytics",
+                profile: "Profile",
+                
+                // Timer page
+                standardTimer: "Standard Timer",
+                seriesMode: "Series Mode",
+                amrapMode: "AMRAP Mode",
+                intervalTraining: "Interval Training",
+                
+                // Controls
+                start: "START",
+                pause: "PAUSE",
+                reset: "RESET",
+                
+                // Stats
+                set: "Set",
+                session: "Session",
+                reps: "Reps",
+                
+                // Modes
+                timerMode: "Timer",
+                series: "Series",
+                amrap: "AMRAP",
+                hiit: "HIIT",
+                
+                // Programs
+                createNewProgram: "Create New Program",
+                buildYourPlan: "Build your training plan",
+                noPrograms: "No programs yet. Create your first one!",
+                
+                // Analytics
+                workouts: "Workouts",
+                totalSets: "Total Sets",
+                thisWeek: "This Week",
+                avgPerWeek: "Avg/Week",
+                dayActivity: "7-Day Activity",
+                volumeByMuscle: "Volume by Muscle",
+                exportAllData: "📥 Export All Data",
+                generateReport: "📊 Generate Report",
+                
+                // Profile
+                athlete: "Athlete",
+                level: "Level",
+                xp: "XP",
+                streak: "Streak",
+                achievements: "Achievements",
+                appearance: "Appearance",
+                theme: "Theme",
+                audioHaptics: "Audio & Haptics",
+                soundEffects: "Sound Effects",
+                vibration: "Vibration",
+                voiceCoach: "Voice Coach",
+                dataManagement: "Data Management",
+                clearAllData: "🗑️ Clear All Data",
+                
+                // Settings
+                settings: "Settings",
+                timerPreferences: "⏱️ Timer Preferences",
+                autoStartRest: "Auto-start Rest",
+                countdownBeeps: "Countdown Beeps",
+                tapAnywherePause: "Tap Anywhere to Pause",
+                
+                unitsDisplay: "📏 Units & Display",
+                weightUnits: "Weight Units",
+                language: "Language",
+                timeFormat: "Time Format",
+                
+                workoutDefaults: "💪 Workout Defaults",
+                defaultRestTime: "Default Rest Time",
+                defaultWorkTime: "Default HIIT Work Time",
+                defaultRounds: "Default Rounds",
+                
+                graphicsEffects: "🎨 Graphics & Effects",
+                scanlinesEffect: "Scanlines Effect",
+                blurEffects: "Blur Effects",
+                glowEffects: "Glow Effects",
+                animations: "Animations",
+                timerFontSize: "Timer Font Size",
+                progressBarStyle: "Progress Bar Style",
+                
+                notifications: "🔔 Notifications",
+                dailyReminder: "Daily Reminder",
+                reminderTime: "Reminder Time",
+                achievementNotifs: "Achievement Notifications",
+                streakAlerts: "Streak Alerts",
+                
+                equipmentTracking: "🏋️ Equipment Tracking",
+                trackWeights: "Track Weights",
+                trackEquipment: "Track Equipment",
+                trackLocation: "Track Gym Location",
+                
+                performance: "⚡ Performance",
+                batterySaver: "Battery Saver Mode",
+                autoSaveFreq: "Auto-save Frequency",
+                
+                advanced: "🔧 Advanced",
+                resetAchievements: "Reset Achievements",
+                resetProgress: "Reset XP & Level",
+                showDebugInfo: "Show Debug Info",
+                
+                about: "ℹ️ About",
+                version: "Version",
+                build: "Build",
+                description: "Professional workout timer with gamification, analytics, and voice coaching.",
+                builtFor: "Built with ❤️ for athletes who train hard.",
+                
+                importData: "📤 Import Data",
+                
+                // Notifications messages
+                workoutComplete: "🔥 Workout Complete!",
+                levelUp: "🎉 Level Up! Now Level",
+                achievementUnlocked: "🏆 Achievement Unlocked:",
+                themeChanged: "Theme changed to",
+                soundEnabled: "Sound enabled",
+                soundDisabled: "Sound disabled",
+                vibrationEnabled: "Vibration enabled",
+                vibrationDisabled: "Vibration disabled",
+                voiceEnabled: "Voice coach enabled",
+                voiceDisabled: "Voice coach disabled",
+                dataExported: "📥 Data exported!",
+                dataImported: "✅ Data imported successfully!",
+                achievementsReset: "🔄 Achievements reset",
+                progressReset: "🔄 Progress reset",
+                batterySaverEnabled: "⚡ Battery saver enabled",
+                batterySaverDisabled: "Battery saver disabled",
+                
+                // Time units
+                minute: "minute",
+                minutes: "minutes",
+                second: "second",
+                seconds: "seconds",
+                
+                // Countdown beeps options
+                beeps321: "3-2-1 only",
+                beeps5: "Last 5 seconds",
+                beeps10: "Last 10 seconds",
+                
+                // Animation options
+                animNone: "None (battery saver)",
+                animReduced: "Reduced",
+                animNormal: "Normal",
+                animSmooth: "Smooth (more battery)",
+                
+                // Timer size options
+                small: "Small",
+                medium: "Medium",
+                large: "Large",
+                extraLarge: "Extra Large",
+                
+                // Progress style
+                linear: "Linear Bar",
+                circular: "Circular",
+                minimal: "Minimal",
+                
+                // Save frequency
+                immediate: "Immediate",
+                every5min: "Every 5 minutes",
+                endWorkout: "End of workout"
+            }
+        };
+
+        // Get translation
+        function t(key) {
+            const lang = state.settings?.language || 'fr';
+            return translations[lang][key] || key;
+        }
+
         // DOM elements
         const display = document.getElementById('display');
         const startBtn = document.getElementById('startBtn');
@@ -1568,6 +1990,8 @@
         function init() {
             loadState();
             applyTheme();
+            loadSettings();
+            applyLanguage();
             updateDisplay();
             updateStats();
             updateStreak();
@@ -1586,6 +2010,109 @@
             checkDaily();
             
             console.log('🔥 Chrono Pro Ultimate initialized!');
+        }
+
+        function loadSettings() {
+            // Load all settings into UI
+            if (!state.settings) return;
+            
+            const s = state.settings;
+            
+            // Timer Preferences
+            if (document.getElementById('autoStartRest')) 
+                document.getElementById('autoStartRest').checked = s.autoStartRest || false;
+            if (document.getElementById('countdownBeeps')) 
+                document.getElementById('countdownBeeps').value = s.countdownBeeps || '321';
+            if (document.getElementById('tapAnywhere')) 
+                document.getElementById('tapAnywhere').checked = s.tapAnywhere !== false;
+            
+            // Units & Display
+            if (document.getElementById('weightUnits')) 
+                document.getElementById('weightUnits').value = s.weightUnits || 'kg';
+            if (document.getElementById('language')) 
+                document.getElementById('language').value = s.language || 'fr';
+            if (document.getElementById('timeFormat')) 
+                document.getElementById('timeFormat').value = s.timeFormat || '24h';
+            
+            // Workout Defaults
+            if (document.getElementById('defaultRest')) 
+                document.getElementById('defaultRest').value = s.defaultRest || 90;
+            if (document.getElementById('defaultWork')) 
+                document.getElementById('defaultWork').value = s.defaultWork || 45;
+            if (document.getElementById('defaultRounds')) 
+                document.getElementById('defaultRounds').value = s.defaultRounds || 8;
+            
+            // Graphics
+            if (document.getElementById('scanlinesEffect')) 
+                document.getElementById('scanlinesEffect').checked = s.scanlinesEffect !== false;
+            if (document.getElementById('blurEffects')) 
+                document.getElementById('blurEffects').checked = s.blurEffects !== false;
+            if (document.getElementById('glowEffects')) 
+                document.getElementById('glowEffects').checked = s.glowEffects !== false;
+            if (document.getElementById('animationSpeed')) 
+                document.getElementById('animationSpeed').value = s.animationSpeed || 'normal';
+            if (document.getElementById('timerSize')) 
+                document.getElementById('timerSize').value = s.timerSize || '16';
+            if (document.getElementById('progressStyle')) 
+                document.getElementById('progressStyle').value = s.progressStyle || 'linear';
+            
+            // Notifications
+            if (document.getElementById('dailyReminder')) 
+                document.getElementById('dailyReminder').checked = s.dailyReminder || false;
+            if (document.getElementById('reminderTime')) 
+                document.getElementById('reminderTime').value = s.reminderTime || '18:00';
+            if (document.getElementById('achievementNotifs')) 
+                document.getElementById('achievementNotifs').checked = s.achievementNotifs !== false;
+            if (document.getElementById('streakAlerts')) 
+                document.getElementById('streakAlerts').checked = s.streakAlerts !== false;
+            
+            // Equipment
+            if (document.getElementById('trackWeights')) 
+                document.getElementById('trackWeights').checked = s.trackWeights || false;
+            if (document.getElementById('trackEquipment')) 
+                document.getElementById('trackEquipment').checked = s.trackEquipment || false;
+            if (document.getElementById('trackLocation')) 
+                document.getElementById('trackLocation').checked = s.trackLocation || false;
+            
+            // Performance
+            if (document.getElementById('batterySaver')) 
+                document.getElementById('batterySaver').checked = s.batterySaver || false;
+            if (document.getElementById('autoSave')) 
+                document.getElementById('autoSave').value = s.autoSave || 'immediate';
+            
+            // Apply graphics settings
+            applyGraphicsSettings();
+        }
+
+        function applyGraphicsSettings() {
+            const s = state.settings;
+            
+            // Scanlines
+            const scanlinesOpacity = (s.scanlinesEffect !== false) ? '0.2' : '0';
+            document.documentElement.style.setProperty('--scanline-opacity', scanlinesOpacity);
+            
+            // Blur
+            if (s.blurEffects === false) {
+                document.body.classList.add('no-blur');
+            } else {
+                document.body.classList.remove('no-blur');
+            }
+            
+            // Glow
+            if (s.glowEffects === false) {
+                document.body.classList.add('no-glow');
+            } else {
+                document.body.classList.remove('no-glow');
+            }
+            
+            // Timer size
+            const timerSize = s.timerSize || '16';
+            if (display) display.style.fontSize = timerSize + 'vw';
+            
+            // Animation speed
+            const animSpeed = s.animationSpeed || 'normal';
+            const speedMap = { 'none': '0s', 'reduced': '0.15s', 'normal': '0.3s', 'smooth': '0.4s' };
+            document.documentElement.style.setProperty('--animation-speed', speedMap[animSpeed]);
         }
 
         function setupGestures() {
@@ -1795,12 +2322,27 @@
             state.currentSeconds--;
             updateDisplay();
 
-            if (state.currentSeconds === 3 || state.currentSeconds === 2 || state.currentSeconds === 1) {
+            // Countdown beeps based on settings
+            const beepsSetting = state.settings?.countdownBeeps || '321';
+            let shouldBeep = false;
+            
+            if (beepsSetting === '321') {
+                shouldBeep = (state.currentSeconds === 3 || state.currentSeconds === 2 || state.currentSeconds === 1);
+            } else if (beepsSetting === '5') {
+                shouldBeep = (state.currentSeconds <= 5 && state.currentSeconds >= 1);
+            } else if (beepsSetting === '10') {
+                shouldBeep = (state.currentSeconds <= 10 && state.currentSeconds >= 1);
+            }
+            
+            if (shouldBeep) {
                 playCountdownBeep();
                 vibrate(100);
-                speak(state.currentSeconds.toString());
+                if (state.currentSeconds <= 3) {
+                    speak(state.currentSeconds.toString());
+                }
             }
 
+            // Timer finished
             if (state.currentSeconds <= 0) {
                 handleTimerComplete();
             }
@@ -1810,8 +2352,73 @@
             playFinishBeep();
             vibrate([200, 100, 200]);
             speak('Time up');
-            
-            completeWorkout();
+
+            // Mode Series avec auto-rest
+            if (state.mode === 'series' && !state.inRest) {
+                // Finished a set
+                if (state.currentSerie < state.totalSeries) {
+                    state.inRest = true;
+                    state.totalSeconds = state.restSeconds;
+                    state.currentSeconds = state.restSeconds;
+                    updateDisplay();
+                    showNotification(`Set ${state.currentSerie} complete! Rest time.`);
+                    
+                    // Auto-start rest if enabled
+                    if (state.settings?.autoStartRest) {
+                        setTimeout(() => {
+                            if (state.inRest && !state.isRunning) {
+                                startTimer();
+                            }
+                        }, 500);
+                    }
+                } else {
+                    // Workout complete
+                    completeWorkout();
+                }
+                
+            } else if (state.mode === 'series' && state.inRest) {
+                // Finished rest, next set
+                state.inRest = false;
+                state.currentSerie++;
+                state.totalSeconds = state.initialSeconds;
+                state.currentSeconds = state.initialSeconds;
+                updateDisplay();
+                showNotification(`Set ${state.currentSerie} - GO!`);
+                
+                // Auto-start next set if enabled
+                if (state.settings?.autoStartRest) {
+                    setTimeout(() => {
+                        if (!state.isRunning) {
+                            startTimer();
+                        }
+                    }, 500);
+                }
+                
+            } else if (state.mode === 'interval') {
+                if (state.inWork) {
+                    // Finished work, start rest
+                    state.inWork = false;
+                    state.totalSeconds = state.intervalRestSeconds;
+                    state.currentSeconds = state.intervalRestSeconds;
+                    updateDisplay();
+                } else {
+                    // Finished rest
+                    if (state.currentRound < state.totalRounds) {
+                        state.currentRound++;
+                        state.inWork = true;
+                        state.totalSeconds = state.workSeconds;
+                        state.currentSeconds = state.workSeconds;
+                        updateDisplay();
+                        showNotification(`Round ${state.currentRound}`);
+                    } else {
+                        completeWorkout();
+                    }
+                }
+                
+            } else {
+                // Simple timer or AMRAP complete
+                completeWorkout();
+            }
         }
 
         function pauseTimer() {
@@ -1822,6 +2429,15 @@
         }
 
         function togglePause() {
+            // Check if tap anywhere is enabled (default: true)
+            const tapAnywhereEnabled = state.settings?.tapAnywhere !== false;
+            
+            if (!tapAnywhereEnabled) {
+                // Only toggle if tap anywhere is disabled and we clicked directly on timer
+                // This is already handled by onclick on the timer element
+                return;
+            }
+            
             if (state.isRunning) {
                 pauseTimer();
             } else if (state.currentSeconds > 0) {
@@ -1880,7 +2496,7 @@
             state.sessionStart = null;
             state.currentWorkout = null;
             
-            showNotification('🔥 Workout Complete! +20 XP');
+            showNotification(`${t('workoutComplete')} +20 XP`);
         }
 
         // =====================================
@@ -1957,7 +2573,7 @@
             if (state.xp >= xpForNextLevel) {
                 state.level++;
                 state.xp = state.xp - xpForNextLevel;
-                showNotification(`🎉 Level Up! Now Level ${state.level}`);
+                showNotification(`${t('levelUp')} ${state.level}`);
                 vibrate([100, 50, 100, 50, 100]);
             }
             
@@ -2305,52 +2921,173 @@
 
         function toggleSetting(setting) {
             const checkbox = document.getElementById(setting);
+            if (!checkbox) return;
+            
             state.settings = state.settings || {};
             state.settings[setting] = checkbox.checked;
+            
+            // Apply specific settings with user feedback
+            if (setting === 'autoStartRest') {
+                showNotification(checkbox.checked ? '✅ Auto-rest enabled' : '❌ Auto-rest disabled');
+            } else if (setting === 'tapAnywhere') {
+                showNotification(checkbox.checked ? '✅ Tap anywhere enabled' : '❌ Tap anywhere disabled');
+            } else if (setting === 'dailyReminder') {
+                showNotification(checkbox.checked ? '✅ Daily reminder enabled' : '❌ Daily reminder disabled');
+            } else if (setting === 'achievementNotifs') {
+                showNotification(checkbox.checked ? '✅ Achievement notifications enabled' : '❌ Achievement notifications disabled');
+            } else if (setting === 'streakAlerts') {
+                showNotification(checkbox.checked ? '✅ Streak alerts enabled' : '❌ Streak alerts disabled');
+            } else if (setting === 'trackWeights') {
+                showNotification(checkbox.checked ? '✅ Weight tracking enabled' : '❌ Weight tracking disabled');
+            } else if (setting === 'trackEquipment') {
+                showNotification(checkbox.checked ? '✅ Equipment tracking enabled' : '❌ Equipment tracking disabled');
+            } else if (setting === 'trackLocation') {
+                showNotification(checkbox.checked ? '✅ Location tracking enabled' : '❌ Location tracking disabled');
+            }
+            
             saveState();
-            showNotification(`${setting} ${checkbox.checked ? 'enabled' : 'disabled'}`);
         }
 
         function updateSetting(setting) {
             const element = document.getElementById(setting);
+            if (!element) return;
+            
             state.settings = state.settings || {};
             state.settings[setting] = element.value;
+            
+            // Apply specific settings
+            if (setting === 'defaultRest') {
+                state.restSeconds = parseInt(element.value);
+                showNotification(`${t('defaultRestTime')}: ${formatTime(parseInt(element.value))}`);
+            } else if (setting === 'defaultWork') {
+                state.workSeconds = parseInt(element.value);
+                showNotification(`${t('defaultWorkTime')}: ${element.value}s`);
+            } else if (setting === 'defaultRounds') {
+                state.totalRounds = parseInt(element.value);
+                showNotification(`${t('defaultRounds')}: ${element.value}`);
+            } else if (setting === 'countdownBeeps') {
+                const labels = {'321': t('beeps321'), '5': t('beeps5'), '10': t('beeps10')};
+                showNotification(`${t('countdownBeeps')}: ${labels[element.value]}`);
+            } else if (setting === 'weightUnits') {
+                showNotification(`${t('weightUnits')}: ${element.value}`);
+            } else if (setting === 'language') {
+                applyLanguage();
+                showNotification(`${t('language')}: ${element.value === 'fr' ? 'Français' : 'English'}`);
+            }
+            
             saveState();
-            showNotification(`${setting} updated`);
+        }
+
+        // Apply language to all UI elements
+        function applyLanguage() {
+            // Update all text content with data-i18n attribute
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                el.textContent = t(key);
+            });
+            
+            // Update placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                el.placeholder = t(key);
+            });
+            
+            // Force update of dynamic content
+            updatePageTitle();
+        }
+
+        function updatePageTitle() {
+            const titles = {
+                'timer': t('timer'),
+                'programs': t('programs'),
+                'analytics': t('analytics'),
+                'profile': t('profile')
+            };
+            const titleEl = document.getElementById('pageTitle');
+            if (titleEl) {
+                titleEl.textContent = titles[state.currentPage] || t('timer');
+            }
         }
 
         function toggleGraphics(effect) {
             const checkbox = document.getElementById(effect + 'Effect');
-            const body = document.body;
+            if (!checkbox) return;
             
             if (effect === 'scanlines') {
-                body.style.setProperty('--scanline-opacity', checkbox.checked ? '0.2' : '0');
+                const opacity = checkbox.checked ? '0.2' : '0';
+                document.documentElement.style.setProperty('--scanline-opacity', opacity);
+                console.log('Scanlines opacity set to:', opacity);
+                showNotification(checkbox.checked ? '✅ Scanlines enabled' : '❌ Scanlines disabled');
+                
             } else if (effect === 'blur') {
-                body.classList.toggle('no-blur', !checkbox.checked);
+                if (checkbox.checked) {
+                    document.body.classList.remove('no-blur');
+                } else {
+                    document.body.classList.add('no-blur');
+                }
+                console.log('Blur effect:', checkbox.checked ? 'enabled' : 'disabled', '- Body classes:', document.body.className);
+                showNotification(checkbox.checked ? '✅ Blur effects enabled' : '❌ Blur effects disabled');
+                
             } else if (effect === 'glow') {
-                body.classList.toggle('no-glow', !checkbox.checked);
+                if (checkbox.checked) {
+                    document.body.classList.remove('no-glow');
+                } else {
+                    document.body.classList.add('no-glow');
+                }
+                console.log('Glow effect:', checkbox.checked ? 'enabled' : 'disabled', '- Body classes:', document.body.className);
+                showNotification(checkbox.checked ? '✅ Glow effects enabled' : '❌ Glow effects disabled');
             }
             
             state.settings = state.settings || {};
-            state.settings[effect] = checkbox.checked;
+            state.settings[effect + 'Effect'] = checkbox.checked;
             saveState();
+            
+            // Force repaint
+            document.body.style.display = 'none';
+            document.body.offsetHeight; // Trigger reflow
+            document.body.style.display = '';
         }
 
         function updateGraphics(setting) {
             const element = document.getElementById(setting);
+            if (!element) return;
+            
             const value = element.value;
             
-            if (setting === 'animations') {
-                document.documentElement.style.setProperty('--animation-speed', 
-                    value === 'none' ? '0s' : 
-                    value === 'reduced' ? '0.15s' : 
-                    value === 'smooth' ? '0.4s' : '0.3s'
-                );
+            if (setting === 'animationSpeed') {
+                const speedMap = {
+                    'none': '0s',
+                    'reduced': '0.15s',
+                    'normal': '0.3s',
+                    'smooth': '0.4s'
+                };
+                document.documentElement.style.setProperty('--animation-speed', speedMap[value]);
+                console.log('Animation speed set to:', speedMap[value]);
+                
+                const labels = {
+                    'none': '❌ Animations disabled',
+                    'reduced': '⚡ Reduced animations',
+                    'normal': '✅ Normal animations',
+                    'smooth': '🌊 Smooth animations'
+                };
+                showNotification(labels[value]);
+                
+                // Force CSS update
+                document.body.style.display = 'none';
+                document.body.offsetHeight;
+                document.body.style.display = '';
+                
             } else if (setting === 'timerSize') {
-                display.style.fontSize = value + 'vw';
+                const display = document.getElementById('display');
+                if (display) {
+                    display.style.fontSize = value + 'vw';
+                    console.log('Timer font size set to:', value + 'vw');
+                    showNotification(`📏 Timer size: ${value}vw`);
+                }
+                
             } else if (setting === 'progressStyle') {
-                // Future implementation for circular progress
-                showNotification(`Progress style: ${value}`);
+                showNotification(`📊 Progress style: ${value}`);
+                console.log('Progress style set to:', value);
             }
             
             state.settings = state.settings || {};
@@ -2359,21 +3096,42 @@
         }
 
         function toggleBatterySaver() {
-            const enabled = document.getElementById('batterySaver').checked;
+            const checkbox = document.getElementById('batterySaver');
+            if (!checkbox) return;
+            
+            const enabled = checkbox.checked;
             
             if (enabled) {
+                // Disable all graphics
                 document.getElementById('animationSpeed').value = 'none';
                 document.getElementById('scanlinesEffect').checked = false;
                 document.getElementById('blurEffects').checked = false;
                 document.getElementById('glowEffects').checked = false;
                 
-                updateGraphics('animations');
+                updateGraphics('animationSpeed');
                 toggleGraphics('scanlines');
                 toggleGraphics('blur');
                 toggleGraphics('glow');
+                
+                showNotification('⚡ Battery saver enabled');
+            } else {
+                // Re-enable defaults
+                document.getElementById('animationSpeed').value = 'normal';
+                document.getElementById('scanlinesEffect').checked = true;
+                document.getElementById('blurEffects').checked = true;
+                document.getElementById('glowEffects').checked = true;
+                
+                updateGraphics('animationSpeed');
+                toggleGraphics('scanlines');
+                toggleGraphics('blur');
+                toggleGraphics('glow');
+                
+                showNotification('Battery saver disabled');
             }
             
-            showNotification(enabled ? 'Battery saver enabled' : 'Battery saver disabled');
+            state.settings = state.settings || {};
+            state.settings.batterySaver = enabled;
+            saveState();
         }
 
         function resetAchievements() {
@@ -2381,7 +3139,8 @@
                 state.achievements = DEFAULT_ACHIEVEMENTS.map(a => ({...a, unlocked: false}));
                 saveState();
                 renderAchievements();
-                showNotification('Achievements reset');
+                showNotification('🔄 Achievements reset');
+                vibrate(200);
             }
         }
 
@@ -2391,19 +3150,27 @@
                 state.xp = 0;
                 saveState();
                 updateProfile();
-                showNotification('Progress reset');
+                showNotification('🔄 Progress reset');
+                vibrate(200);
             }
         }
 
         function showDebugInfo() {
-            const info = `
-Storage Used: ${JSON.stringify(state).length} bytes
-Total Workouts: ${state.history.length}
-Achievements Unlocked: ${state.achievements.filter(a => a.unlocked).length}
-Current Streak: ${state.streak}
-Level: ${state.level}
-XP: ${state.xp}
-            `.trim();
+            const storageSize = JSON.stringify(state).length;
+            const unlockedAchievements = state.achievements.filter(a => a.unlocked).length;
+            
+            const info = `📊 DEBUG INFO
+
+💾 Storage: ${storageSize} bytes (${(storageSize/1024).toFixed(1)} KB)
+🏋️ Total Workouts: ${state.history.length}
+🏆 Achievements: ${unlockedAchievements}/${state.achievements.length}
+🔥 Streak: ${state.streak} days
+⭐ Level: ${state.level} (${state.xp} XP)
+📅 Last Workout: ${state.lastWorkoutDate || 'Never'}
+🎨 Theme: ${state.theme}
+🔊 Sound: ${state.soundEnabled ? 'ON' : 'OFF'}
+📳 Vibrate: ${state.vibrateEnabled ? 'ON' : 'OFF'}
+🎤 Voice: ${state.voiceEnabled ? 'ON' : 'OFF'}`;
             
             alert(info);
         }
@@ -2415,19 +3182,36 @@ XP: ${state.xp}
             
             input.onchange = (e) => {
                 const file = e.target.files[0];
+                if (!file) return;
+                
                 const reader = new FileReader();
                 
                 reader.onload = (event) => {
                     try {
                         const imported = JSON.parse(event.target.result);
                         
-                        if (confirm('Import this data? Current data will be replaced!')) {
-                            state = { ...state, ...imported };
+                        if (confirm('📥 Import this data? Current data will be replaced!')) {
+                            // Merge imported data with current state
+                            if (imported.history) state.history = imported.history;
+                            if (imported.programs) state.programs = imported.programs;
+                            if (imported.achievements) state.achievements = imported.achievements;
+                            if (imported.profile) {
+                                state.level = imported.profile.level || 1;
+                                state.xp = imported.profile.xp || 0;
+                                state.streak = imported.profile.streak || 0;
+                                state.totalWorkouts = imported.profile.totalWorkouts || 0;
+                            }
+                            
                             saveState();
-                            location.reload();
+                            showNotification('✅ Data imported successfully!');
+                            
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1500);
                         }
                     } catch (error) {
-                        alert('Invalid file format');
+                        alert('❌ Invalid file format. Please select a valid JSON backup file.');
+                        console.error('Import error:', error);
                     }
                 };
                 
