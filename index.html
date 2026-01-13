@@ -190,6 +190,7 @@
         // --- ÉTAT ---
         let state = {
             timer: { current: 90, total: 90, running: false, interval: null },
+            session: { startTime: null, elapsed: 0, interval: null },
             activeWorkout: { program: null, exIdx: 0, setIdx: 1 },
             profile: { level: 1, xp: 0, streak: 0, workouts: 0, history: [] },
             programs: [],
@@ -200,6 +201,16 @@
         function startTimer() {
             if(state.timer.running) return;
             state.timer.running = true;
+
+            // Démarrer le timer de session si pas déjà démarré
+            if(!state.session.startTime) {
+                state.session.startTime = Date.now();
+                state.session.interval = setInterval(() => {
+                    state.session.elapsed = Math.floor((Date.now() - state.session.startTime) / 1000);
+                    updateUI();
+                }, 1000);
+            }
+
             state.timer.interval = setInterval(() => {
                 state.timer.current--;
                 updateUI();
@@ -212,22 +223,39 @@
             clearInterval(state.timer.interval);
         }
 
+        function toggleTimer() {
+            if(state.timer.running) {
+                pauseTimer();
+            } else {
+                startTimer();
+            }
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            state.timer.current = state.timer.total;
+            updateUI();
+        }
+
         function handleEnd() {
             pauseTimer();
             new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YT1vT19vT19vT19vT19vT19vT19vT19vT19vT19vT19vT19vT19vT19vT19vT19vT19vT19vT19vT19vT19vT19v').play();
-            
+
             if(state.activeWorkout.program) {
                 const prog = state.activeWorkout.program;
                 const ex = prog.exercises[state.activeWorkout.exIdx];
-                
+
                 if(state.activeWorkout.setIdx < ex.sets) {
                     state.activeWorkout.setIdx++;
                     state.timer.current = ex.rest;
+                    state.timer.total = ex.rest;
                     alert(`Série terminée ! Prochaine série dans ${ex.rest}s`);
                 } else if(state.activeWorkout.exIdx < prog.exercises.length - 1) {
                     state.activeWorkout.exIdx++;
                     state.activeWorkout.setIdx = 1;
-                    state.timer.current = prog.exercises[state.activeWorkout.exIdx].rest;
+                    const nextEx = prog.exercises[state.activeWorkout.exIdx];
+                    state.timer.current = nextEx.rest;
+                    state.timer.total = nextEx.rest;
                     alert("Exercice suivant !");
                 } else {
                     manualFinishWorkout();
@@ -241,7 +269,11 @@
         function switchPage(p) {
             document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active'));
             document.getElementById(p + 'Page').classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(ni => ni.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach((ni, idx) => {
+                ni.classList.remove('active');
+                const pages = ['timer', 'programs', 'analytics'];
+                if(pages[idx] === p) ni.classList.add('active');
+            });
         }
 
         function openModal(m) { document.getElementById(m + 'Modal').classList.add('show'); if(m==='exerciseSelector') filterEx(); }
@@ -297,13 +329,21 @@
             document.getElementById('finishWorkoutBtn').classList.add('show');
             switchPage('timer');
             state.timer.current = p.exercises[0].rest;
+            state.timer.total = p.exercises[0].rest;
             updateUI();
         }
 
         function manualFinishWorkout() {
             state.profile.workouts++;
             state.profile.xp += 50;
+            state.profile.streak++;
             state.activeWorkout.program = null;
+
+            // Arrêter le timer de session
+            clearInterval(state.session.interval);
+            state.session.startTime = null;
+            state.session.elapsed = 0;
+
             document.getElementById('finishWorkoutBtn').classList.remove('show');
             alert("Séance terminée ! +50 XP");
             saveToStorage();
@@ -315,25 +355,62 @@
             const m = Math.floor(state.timer.current / 60);
             const s = state.timer.current % 60;
             document.getElementById('display').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-            
+
+            // Mise à jour du timer de session
+            const sessionM = Math.floor(state.session.elapsed / 60);
+            const sessionS = state.session.elapsed % 60;
+            document.getElementById('sessionTime').innerText = `${sessionM.toString().padStart(2,'0')}:${sessionS.toString().padStart(2,'0')}`;
+
             if(state.activeWorkout.program) {
                 const ex = state.activeWorkout.program.exercises[state.activeWorkout.exIdx];
                 document.getElementById('workoutBadge').innerText = `${ex.icon} ${ex.name}`;
                 document.getElementById('currentSet').innerText = `${state.activeWorkout.setIdx}/${ex.sets}`;
                 document.getElementById('repsTarget').innerText = ex.reps;
             }
-            
+
+            // Mise à jour de la barre de progression
+            const progress = ((state.timer.total - state.timer.current) / state.timer.total) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+
             document.getElementById('userLevel').innerText = Math.floor(state.profile.xp / 100) + 1;
             document.getElementById('totalWorkouts').innerText = state.profile.workouts;
+            document.getElementById('streakBadge').innerText = `🔥 ${state.profile.streak}`;
         }
 
-        function saveToStorage() { localStorage.setItem('chrono_data', JSON.stringify(state)); }
+        function saveToStorage() {
+            // Sauvegarder sans les intervalles
+            const toSave = {
+                timer: { current: state.timer.current, total: state.timer.total, running: false, interval: null },
+                session: { startTime: null, elapsed: 0, interval: null },
+                activeWorkout: state.activeWorkout,
+                profile: state.profile,
+                programs: state.programs,
+                tempEx: []
+            };
+            localStorage.setItem('chrono_data', JSON.stringify(toSave));
+        }
+
         function loadFromStorage() {
             const d = localStorage.getItem('chrono_data');
-            if(d) { state = JSON.parse(d); renderPrograms(); updateUI(); }
+            if(d) {
+                const loaded = JSON.parse(d);
+                state.profile = loaded.profile || state.profile;
+                state.programs = loaded.programs || state.programs;
+                state.timer.current = loaded.timer?.current || 90;
+                state.timer.total = loaded.timer?.total || 90;
+                renderPrograms();
+                updateUI();
+            }
         }
 
         loadFromStorage();
+
+        // --- SERVICE WORKER ---
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('Service Worker enregistré', reg))
+                .catch(err => console.error('Erreur Service Worker', err));
+        }
     </script>
 </body>
 </html>
